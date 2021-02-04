@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "encrusted",
+  "version": "${version}",
+
+  "name": "Encrusted",
+  "description": "Adds the ability to encrust armor to give it special benefits.",
+  "authors": [
+    "Stardok4"
+  ],
+
+  "license": "CC0-1.0",
+  "icon": "assets/encrusted/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.moddybunch.encrusted.Encrusted"
+    ]
+  },
+  "mixins": [
+    "encrusted.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  }
+
+}
