@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing",
+  "base": {
+    "item": "minecraft:leather_helmet"
+  },
+  "addition": {
+    "item": "encrusted:ruby"
+  },
+  "result": {
+    "item": "encrusted:ruby_encrusted_leather_helmet"
+  }
+}
