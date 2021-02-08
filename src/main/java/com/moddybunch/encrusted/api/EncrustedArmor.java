@@ -48,6 +48,9 @@ public class EncrustedArmor implements ArmorMaterial {
         this.toughness = baseMaterial.getToughness() + encrustor.getToughnessBonus();
         this.knockbackResistance = baseMaterial.getKnockbackResistance() + encrustor.getKnockbackResistanceBonus();
         this.repairIngredientSupplier = baseMaterial.getRepairIngredient();
+
+        this.baseMaterial = baseMaterial;
+        this.encrustor = encrustor;
     }
 
     /**
@@ -148,5 +151,15 @@ public class EncrustedArmor implements ArmorMaterial {
      */
     public ArmorEncrustor getEncrustor() {
         return encrustor;
+    }
+
+    /**
+     * Get the base material used to create the armor material
+     *
+     * @return The base ArmorMaterial for the new material
+     * @author MitchP404
+     */
+    public ArmorMaterial getBaseMaterial() {
+        return baseMaterial;
     }
 }

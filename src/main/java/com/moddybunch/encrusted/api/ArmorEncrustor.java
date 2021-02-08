@@ -19,6 +19,9 @@ public class ArmorEncrustor {
     private float toughnessBonus;
     private float knockbackResistanceBonus;
 
+    //The name of the item, in all lowercase (used in registering the armor)
+    private String registerName;
+
     /**
      * Create a new Encrustor for an Item
      *
@@ -31,8 +34,9 @@ public class ArmorEncrustor {
      *
      * @author MitchP404
      */
-    public ArmorEncrustor(Item baseItem, int durabilityBonus, int protectionBonus, int enchantabilityBonus, int toughnessBonus, int knockbackResistanceBonus) {
+    public ArmorEncrustor(Item baseItem, String name, int durabilityBonus, int protectionBonus, int enchantabilityBonus, float toughnessBonus, float knockbackResistanceBonus) {
         this.baseItem = baseItem;
+        this.registerName = name;
         this.durabilityBonus = durabilityBonus;
         this.protectionBonus = protectionBonus;
         this.enchantabilityBonus = enchantabilityBonus;
@@ -98,5 +102,15 @@ public class ArmorEncrustor {
      */
     public float getKnockbackResistanceBonus() {
         return knockbackResistanceBonus;
+    }
+
+    /**
+     * Get the register name of the Encrustor (used for registering encrusted items)
+     *
+     * @return The register name
+     * @author MitchP404
+     */
+    public String getName() {
+        return registerName;
     }
 }
