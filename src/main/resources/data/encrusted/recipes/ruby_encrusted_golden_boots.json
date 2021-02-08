@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing",
+  "base": {
+    "item": "minecraft:golden_boots"
+  },
+  "addition": {
+    "item": "encrusted:ruby"
+  },
+  "result": {
+    "item": "encrusted:ruby_encrusted_golden_boots"
+  }
+}
