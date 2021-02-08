@@ -7,7 +7,7 @@ public class Encrusted implements ModInitializer {
 
 	// Our modid, reference this instead of actually typing "encrusted"
 	public static final String MODID = "encrusted";
-
+	// no you
 	@Override
 	public void onInitialize() {
 		EncrustedRegistries.init();
