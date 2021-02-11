@@ -21,6 +21,7 @@ public class EncrustedRegistries {
 
     //Items
     public static final Identifier RUBY_ID = new Identifier(Encrusted.MODID, "ruby");
+    public static final Identifier DEV_GEM_ID = new Identifier(Encrusted.MODID, "dev_gem");
 
     //Build Item Groups
     public static final ItemGroup ENCRUSTED_GROUP = FabricItemGroupBuilder.build(
@@ -32,9 +33,13 @@ public class EncrustedRegistries {
     //Items
     public static final Item RUBY = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
 
+    //For us to use to test things
+    public static final Item DEV_GEM = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
+
 
     //Encrustors
     public static final ArmorEncrustor RUBY_ARMOR_ENCRUSTOR = new ArmorEncrustor(RUBY, "ruby", 0, 1, 0, 0.5f,0);
+    public static final ArmorEncrustor DEV_ARMOR_ENCRUSTOR = new ArmorEncrustor(DEV_GEM, "dev_gem", 0, 0, 0, 0f,0.1f);
 
     /**
      * Runs in onInitialize, registers the objects in this class
@@ -42,9 +47,11 @@ public class EncrustedRegistries {
     public static void init() {
         //Items
         Registry.register(Registry.ITEM, RUBY_ID, RUBY);
+        Registry.register(Registry.ITEM, DEV_GEM_ID, DEV_GEM);
 
        //Encrusted Armors
        registerAllVanillaArmors(RUBY_ARMOR_ENCRUSTOR);
+       registerAllVanillaArmors(DEV_ARMOR_ENCRUSTOR);
     }
 
     /**

@@ -4,6 +4,7 @@
   "package": "com.moddybunch.encrusted.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "KnockbackResMixin"
   ],
   "client": [
   ],
