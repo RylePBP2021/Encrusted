@@ -32,6 +32,7 @@ public class EncrustedRegistries {
     //Items
     public static final Item RUBY = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
 
+
     //Encrustors
     public static final ArmorEncrustor RUBY_ARMOR_ENCRUSTOR = new ArmorEncrustor(RUBY, "ruby", 0, 1, 0, 0.5f,0);
 
@@ -73,9 +74,16 @@ public class EncrustedRegistries {
                 slotName = "error_armor";
         }
 
+        String baseName;
+        if ("gold".equals(encrustedMaterial.getBaseMaterial().getName())) {
+            baseName = "golden";
+        } else {
+            baseName = encrustedMaterial.getBaseMaterial().getName();
+        }
+
         Registry.register(
                 Registry.ITEM,
-                new Identifier(Encrusted.MODID, encrustedMaterial.getEncrustor().getName() + "_encrusted_" + encrustedMaterial.getBaseMaterial().getName() + "_" + slotName),
+                new Identifier(Encrusted.MODID, encrustedMaterial.getEncrustor().getName() + "_encrusted_" + baseName + "_" + slotName),
                 new ArmorItem(encrustedMaterial, slot, new Item.Settings().group(ENCRUSTED_GROUP))
         );
     }
