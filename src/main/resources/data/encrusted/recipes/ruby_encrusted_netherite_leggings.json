@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing",
+  "base": {
+    "item": "minecraft:netherite_leggings"
+  },
+  "addition": {
+    "item": "encrusted:ruby"
+  },
+  "result": {
+    "item": "encrusted:ruby_encrusted_netherite_leggings"
+  }
+}
