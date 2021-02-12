@@ -1,14 +1,18 @@
 package com.moddybunch.encrusted.util;
 
+import com.google.gson.JsonObject;
 import com.moddybunch.encrusted.Encrusted;
 import com.moddybunch.encrusted.api.ArmorEncrustor;
 import com.moddybunch.encrusted.api.EncrustedArmor;
+import com.moddybunch.encrusted.api.JsonGen;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+
+import java.util.ArrayList;
 
 /**
  * Where we will register our items, blocks, tools, etc, and store some basic information about them.
@@ -40,6 +44,9 @@ public class EncrustedRegistries {
     //Encrustors
     public static final ArmorEncrustor RUBY_ARMOR_ENCRUSTOR = new ArmorEncrustor(RUBY, "ruby", 0, 1, 0, 0.5f,0);
     public static final ArmorEncrustor DEV_ARMOR_ENCRUSTOR = new ArmorEncrustor(DEV_GEM, "dev_gem", 0, 0, 0, 0f,0.1f);
+
+    //Smithing recipes
+    public static ArrayList<JsonObject> smithingRecipes = new ArrayList<>();
 
     /**
      * Runs in onInitialize, registers the objects in this class
@@ -88,9 +95,14 @@ public class EncrustedRegistries {
             baseName = encrustedMaterial.getBaseMaterial().getName();
         }
 
+        String basePiece = baseName + "_" + slotName;
+        Identifier id = new Identifier(Encrusted.MODID, encrustedMaterial.getEncrustor().getName() + "_encrusted_" + basePiece);
+
+        smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", basePiece), new Identifier(Encrusted.MODID, encrustedMaterial.getEncrustor().getName()), id));
+
         Registry.register(
                 Registry.ITEM,
-                new Identifier(Encrusted.MODID, encrustedMaterial.getEncrustor().getName() + "_encrusted_" + baseName + "_" + slotName),
+                id,
                 new ArmorItem(encrustedMaterial, slot, new Item.Settings().group(ENCRUSTED_GROUP))
         );
     }
