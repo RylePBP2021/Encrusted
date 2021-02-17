@@ -12,6 +12,7 @@ public class Encrusted implements ModInitializer {
 
 	// Our modid, reference this instead of actually typing "encrusted"
 	public static final String MODID = "encrusted";
+	// no you
 
 	// Creates the new chest loot tables
 	public static final Identifier Ruined_Portal_Loot_Table_ID = new Identifier("minecraft", "chests/ruined_portal");
