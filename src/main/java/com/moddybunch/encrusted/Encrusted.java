@@ -35,7 +35,6 @@ public class Encrusted implements ModInitializer {
 			}
 
 
-
 		} );
 	}
 }
