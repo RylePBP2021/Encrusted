@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.moddybunch.encrusted.Encrusted;
 import com.moddybunch.encrusted.api.ArmorEncrustor;
 import com.moddybunch.encrusted.api.EncrustedArmor;
+import com.moddybunch.encrusted.api.EncrustedID;
 import com.moddybunch.encrusted.api.JsonGen;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -70,35 +71,9 @@ public class EncrustedRegistries {
      */
     public static void registerEnctrustedArmor(EncrustedArmor encrustedMaterial, EquipmentSlot slot) {
 
-        String slotName;
-        switch(slot.getName()) {
-            case "feet":
-                slotName = "boots";
-                break;
-            case "legs":
-                slotName = "leggings";
-                break;
-            case "chest":
-                slotName = "chestplate";
-                break;
-            case "head":
-                slotName = "helmet";
-                break;
-            default:
-                slotName = "error_armor";
-        }
+        EncrustedID id = new EncrustedID(Encrusted.MODID, encrustedMaterial, slot);
 
-        String baseName;
-        if ("gold".equals(encrustedMaterial.getBaseMaterial().getName())) {
-            baseName = "golden";
-        } else {
-            baseName = encrustedMaterial.getBaseMaterial().getName();
-        }
-
-        String basePiece = baseName + "_" + slotName;
-        Identifier id = new Identifier(Encrusted.MODID, encrustedMaterial.getEncrustor().getName() + "_encrusted_" + basePiece);
-
-        smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", basePiece), new Identifier(Encrusted.MODID, encrustedMaterial.getEncrustor().getName()), id));
+        smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getBaseMaterialLongName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
 
         Registry.register(
                 Registry.ITEM,
