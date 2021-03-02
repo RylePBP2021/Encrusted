@@ -73,7 +73,7 @@ public class EncrustedRegistries {
 
         EncrustedID id = new EncrustedID(Encrusted.MODID, encrustedMaterial, slot);
 
-        smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getBaseMaterialLongName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
+        smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getFullItemName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
 
         Registry.register(
                 Registry.ITEM,

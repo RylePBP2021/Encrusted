@@ -1,5 +1,6 @@
 package com.moddybunch.encrusted.api;
 
+import com.moddybunch.encrusted.Encrusted;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.Identifier;
 
@@ -194,16 +195,18 @@ public class EncrustedID extends Identifier {
         encrustorName = id.substring(5, id.indexOf("encrusted") - 1);
         String newId = id.substring(id.indexOf("encrusted") + 10);
 
+        //Encrusted.EncrustedLog.info(newId);
+
         //Pull the material and get its short name
         baseMaterialLongName = newId.substring(0, newId.indexOf("_"));
         baseMaterialShortName = materialLongToShortName(baseMaterialLongName);
 
         //All that is left is the item name, so grab it
-        itemName = newId.substring(id.indexOf("_") + 1);
+        itemName = newId.substring(newId.indexOf("_") + 1);
         altItemName = altNameFromItemName(itemName);
     }
 
-    // Getters
+    // Simple Getters
     public String getEncrustorName() {
         return encrustorName;
     }
@@ -222,5 +225,15 @@ public class EncrustedID extends Identifier {
 
     public String getAltItemName() {
         return altItemName;
+    }
+
+    // Advanced Getters
+
+    /**
+     * Get the full name of the item, including both the base material and the item itself (ex "golden_leggings)
+     * @return The full name
+     */
+    public String getFullItemName() {
+        return baseMaterialLongName + "_" + itemName;
     }
 }
