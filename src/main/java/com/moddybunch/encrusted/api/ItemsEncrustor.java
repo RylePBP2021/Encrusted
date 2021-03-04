@@ -77,7 +77,7 @@ public class ItemsEncrustor {
      * @return The sharpness bonus for the Encrustor, as a int
      * @author groverr666
      */
-    public float sharpnessBonus() {
+    public float getSharpnessBonus() {
         return sharpnessBonus;
     }
 
@@ -87,7 +87,7 @@ public class ItemsEncrustor {
      * @return The haste bonus bonus for the Encrustor, as a float
      * @author groverr666
      */
-    public float hasteBonus() {
+    public float getHasteBonus() {
         return hasteBonus;
     }
 

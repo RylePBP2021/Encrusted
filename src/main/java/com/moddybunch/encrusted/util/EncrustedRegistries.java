@@ -2,10 +2,7 @@ package com.moddybunch.encrusted.util;
 
 import com.google.gson.JsonObject;
 import com.moddybunch.encrusted.Encrusted;
-import com.moddybunch.encrusted.api.ArmorEncrustor;
-import com.moddybunch.encrusted.api.EncrustedArmor;
-import com.moddybunch.encrusted.api.EncrustedID;
-import com.moddybunch.encrusted.api.JsonGen;
+import com.moddybunch.encrusted.api.*;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.entity.EquipmentSlot;
@@ -83,6 +80,26 @@ public class EncrustedRegistries {
     }
 
     /**
+     * Register a piece of encrusted armor using the EncrustedArmor and the desired slot
+     *
+     * @param encrustedMaterial The EncrustedArmor to make a piece with
+     * @param slot The EquipmentSlot of the armor
+     * @author MitchP404
+     */
+    public static void registerEnctrustedArmor(EncrustedArmor encrustedMaterial, EquipmentSlot slot) {
+
+        EncrustedID id = new EncrustedID(Encrusted.MODID, encrustedMaterial, slot);
+
+        smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getBaseMaterialLongName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
+
+        Registry.register(
+                Registry.ITEM,
+                id,
+                new ArmorItem(encrustedMaterial, slot, new Item.Settings().group(ENCRUSTED_GROUP))
+        );
+    }
+
+    /**
      * Quickly registers an entire set of encrusted armor
      *
      * @param encrustedMaterial The EncrustedArmor to make a set with
@@ -114,5 +131,26 @@ public class EncrustedRegistries {
         registerEncrustedArmorSet(new EncrustedArmor(ArmorMaterials.DIAMOND, encrustor));
         //Netherite
         registerEncrustedArmorSet(new EncrustedArmor(ArmorMaterials.NETHERITE, encrustor));
+    }
+
+    /**
+     * Quickly registers every single vanilla item using an encrustor
+     *
+     * @param encrustor The encrustor to use
+     * @author grover666
+     */
+    public static void registerAllVanillaItems(ItemsEncrustor encrustor) {
+        //Wood
+        registerEnctrustedItem(new EncrustedArmor(ToolMaterials.WOOD, encrustor));
+        //Stone
+        registerEnctrustedItem(new EncrustedArmor(ToolMaterials.STONE, encrustor));
+        //Iron
+        registerEnctrustedItem(new EncrustedArmor(ToolMaterials.IRON, encrustor));
+        //Gold
+        registerEnctrustedItem(new EncrustedArmor(ToolMaterials.GOLD, encrustor));
+        //Diamond
+        registerEnctrustedItem(new EncrustedArmor(ToolMaterials.DIAMOND, encrustor));
+        //Netherite
+        registerEnctrustedItem(new EncrustedArmor(ToolMaterials.NETHERITE, encrustor));
     }
 }
