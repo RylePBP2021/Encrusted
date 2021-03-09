@@ -1,0 +1,9 @@
+The code is already in place to read the images, all that is needed is textures that aren't crappy placeholders.
+
+The textures here are printed directly on top of the in game textures for that item.
+Please replace the files in this folder with the art you make, however, do not change the name of the file.
+Also, don't worry about the "dev_gem" stuff, that's just for testing so it really doesn't need a texture.
+If you want to create a new image for the actual ruby item itself, go ahead, but it isn't necessary.
+Just push to the master branch whenever you add a new image.
+
+Thank you so much for your help!!!
