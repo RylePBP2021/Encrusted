@@ -1,0 +1,24 @@
+{
+  "lang": "en_us",
+  "grammar":{
+    "encrustorPosition": 0,
+    "encrustedPosition": 2,
+    "otherPositions": {
+      "word1": 1
+    }
+  },
+  "text": {
+    "encrustors": {
+      "ruby": "Ruby",
+      "dev_gem": "Developmentite"
+    },
+    "other": {
+      "word1": " Encrusted "
+    }
+  },
+  "others": {
+    "itemGroup.encrusted.encrusted_group": "\"itemGroup.encrusted.encrusted_group\":\"Encrusted\"",
+    "item.encrusted.ruby": "Ruby",
+    "item.encrusted.dev_gem": "Developmentite"
+  }
+}
