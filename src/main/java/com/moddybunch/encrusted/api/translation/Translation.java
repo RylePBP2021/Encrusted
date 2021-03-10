@@ -1,22 +1,104 @@
-package com.moddybunch.encrusted.api;
+package com.moddybunch.encrusted.api.translation;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.moddybunch.encrusted.Encrusted;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceType;
+import net.minecraft.item.Items;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
-import java.io.*;
 import java.util.*;
 
-/*public class Translation {
+/**
+ * A class meant to store translations of encrusted objects, such as Ruby Encrusted Chestplate.
+ * Each translation stores three things.
+ * Encrustors is an array of Words in which the key is an String serving as an identifier such as "ruby" and the value is a translated String such as "Ruby"
+ * Others is an array of Strings that stores other needed words, such as " encrusted ". SPACES ARE NECESSARY!
+ * Positions is an array of ints that stores the locations of what is needed.
+ * In this array, "1" is the location of the encrustor, "2" is the location of the encrusted item, and "3" is for other words, in order.
+ *
+ * @author MitchP404
+ */
+public enum Translation {
 
-    private static final JsonParser parser = new JsonParser();
+    ENUS(new Word[]{
+            new Word("ruby", "Ruby"),
+            new Word("dev_gem", "Developmentite")
+        },
+        new String[]{
+            " Encrusted "
+        },
+        new int[]{1, 3, 2}
+    );
+
+    //Encrustors
+    private final Word[] encrustors;
+
+    //Other words
+    private final String[] others;
+
+    //Positions
+    private final int[] positions;
+
+    /**
+     * Creates a new translation
+     *
+     * @param encrustors Encrustor array, key is the identifying String and value is the translated String (ex ruby, Ruby)
+     * @param others Other words, in order and with spaces
+     * @param positions The positions of the words in the final string. "1" for the encrustor, "2" for the encrusted item, "3" for other words
+     *
+     * @author MitchP404
+     */
+    private Translation(Word[] encrustors, String[] others, int[] positions) {
+        this.encrustors = encrustors;
+        this.others = others;
+        this.positions = positions;
+    }
+
+    /**
+     * Generates the needed translation, using the encrustor and the encrusted item
+     * @param encrustorKey The encrustor's key in the array, such as "ruby"
+     * @param itemId The encrusted item's identifier, used to create a TranslatableText for the item (ex use "golden_leggings")
+     * @return The translation for the item
+     * @author MitchP404
+     */
+    public String translate(String encrustorKey, String itemId) {
+        String baseItem = Registry.ITEM.get(new Identifier("minecraft", itemId)).getName().getString();
+        String out = "";
+        int otherIndex = 0;
+        for(int val : positions) {
+            switch(val) {
+                case 1:
+                    out += getEncrustorValFromKey(encrustorKey);
+                    break;
+                case 2:
+                    out += baseItem;
+                    break;
+                case 3:
+                    out += others[otherIndex];
+                    otherIndex++;
+                    break;
+                default:
+                    Encrusted.EncrustedLog.error("Unrecognized position value " + val);
+                    return "ERROR";
+            }
+        }
+
+        Encrusted.EncrustedLog.info("Creating translation for base item \"" + baseItem + "\" using encrustor \"" + getEncrustorValFromKey(encrustorKey) + "\"");
+
+        return out;
+    }
+
+    private String getEncrustorValFromKey(String key) {
+        for(Word word : encrustors) {
+            if(word.getKey().equals(key)) {
+                return word.getValue();
+            }
+        }
+        Encrusted.EncrustedLog.error("Translation key does not have an associated value: " + key);
+        return key;
+    }
+
+    /*private static final JsonParser parser = new JsonParser();
     private static ArrayList<JsonObject> translations = new ArrayList<JsonObject>();
 
     public static void registerTranslationResourceListener() {
@@ -100,5 +182,5 @@ import java.util.*;
             }
         }
         return max;
-    }
-}*/
+    }*/
+}

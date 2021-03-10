@@ -6,6 +6,10 @@ import com.moddybunch.encrusted.api.ArmorEncrustor;
 import com.moddybunch.encrusted.api.EncrustedArmor;
 import com.moddybunch.encrusted.api.EncrustedID;
 import com.moddybunch.encrusted.api.JsonGen;
+import com.moddybunch.encrusted.api.translation.Translation;
+import net.devtech.arrp.api.RRPCallback;
+import net.devtech.arrp.api.RuntimeResourcePack;
+import net.devtech.arrp.json.lang.JLang;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.entity.EquipmentSlot;
@@ -49,6 +53,9 @@ public class EncrustedRegistries {
     //Smithing recipes
     public static ArrayList<JsonObject> smithingRecipes = new ArrayList<>();
 
+    // Lang
+    public static JLang langEnUs = JLang.lang();
+
     /**
      * Runs in onInitialize, registers the objects in this class
      */
@@ -60,6 +67,10 @@ public class EncrustedRegistries {
        //Encrusted Armors
        registerAllVanillaArmors(RUBY_ARMOR_ENCRUSTOR);
        registerAllVanillaArmors(DEV_ARMOR_ENCRUSTOR);
+
+       RuntimeResourcePack rrpEnUs = RuntimeResourcePack.create(Encrusted.MODID + ":en_us");
+       rrpEnUs.addLang(RuntimeResourcePack.id("en_us"), langEnUs);
+       RRPCallback.EVENT.register(a -> a.add(rrpEnUs));
     }
 
     /**
@@ -80,6 +91,8 @@ public class EncrustedRegistries {
                 id,
                 new ArmorItem(encrustedMaterial, slot, new Item.Settings().group(ENCRUSTED_GROUP))
         );
+
+        langEnUs.item(id, Translation.ENUS.translate(id.getEncrustorName(), id.getFullItemName()));
     }
 
     /**
