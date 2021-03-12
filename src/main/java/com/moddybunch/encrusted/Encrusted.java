@@ -14,14 +14,8 @@ public class Encrusted implements ModInitializer {
 	public static final String MODID = "encrusted";
 
 	// Creates the new chest loot tables
-	public static final Identifier Ruined_Portal_Loot_Table_ID = new Identifier("minecraft", "chests/ruined_portal");
+	private static final Identifier Ruined_Portal_Loot_Table_ID = new Identifier("minecraft", "blocks/chests/ruined_portal");
 
-	@Override
-	public void onInitialize() {
-
-		EncrustedRegistries.init();
-		modifyLootTables();
-	}
 
 	private void modifyLootTables() {
 		LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, supplier, setter) -> {
@@ -33,8 +27,15 @@ public class Encrusted implements ModInitializer {
 						.with(LootTableEntry.builder(Ruined_Portal_Loot_Table_ID));
 				supplier.withPool(poolBuilder.build());
 			}
-
-
-		} );
+		});
 	}
+
+	@Override
+	public void onInitialize() {
+
+		EncrustedRegistries.init();
+		modifyLootTables();
+	}
+
+
 }
