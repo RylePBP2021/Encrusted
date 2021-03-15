@@ -4,7 +4,12 @@ import com.google.gson.JsonObject;
 import com.moddybunch.encrusted.Encrusted;
 import com.moddybunch.encrusted.api.ArmorEncrustor;
 import com.moddybunch.encrusted.api.EncrustedArmor;
+import com.moddybunch.encrusted.api.EncrustedID;
 import com.moddybunch.encrusted.api.JsonGen;
+import com.moddybunch.encrusted.api.translation.Translation;
+import net.devtech.arrp.api.RRPCallback;
+import net.devtech.arrp.api.RuntimeResourcePack;
+import net.devtech.arrp.json.lang.JLang;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
@@ -53,6 +58,9 @@ public class EncrustedRegistries {
     //Smithing recipes
     public static ArrayList<JsonObject> smithingRecipes = new ArrayList<>();
 
+    // Lang
+    public static JLang langEnUs = JLang.lang();
+
     /**
      * Runs in onInitialize, registers the objects in this class
      */
@@ -65,8 +73,14 @@ public class EncrustedRegistries {
        registerAllVanillaArmors(RUBY_ARMOR_ENCRUSTOR);
        registerAllVanillaArmors(DEV_ARMOR_ENCRUSTOR);
 
+
         // Functions
         modifyLootTables();
+
+       RuntimeResourcePack rrpEnUs = RuntimeResourcePack.create(Encrusted.MODID + ":en_us");
+       rrpEnUs.addLang(RuntimeResourcePack.id("en_us"), langEnUs);
+       RRPCallback.EVENT.register(a -> a.add(rrpEnUs));
+
     }
 
     /**
@@ -78,41 +92,17 @@ public class EncrustedRegistries {
      */
     public static void registerEnctrustedArmor(EncrustedArmor encrustedMaterial, EquipmentSlot slot) {
 
-        String slotName;
-        switch(slot.getName()) {
-            case "feet":
-                slotName = "boots";
-                break;
-            case "legs":
-                slotName = "leggings";
-                break;
-            case "chest":
-                slotName = "chestplate";
-                break;
-            case "head":
-                slotName = "helmet";
-                break;
-            default:
-                slotName = "error_armor";
-        }
+        EncrustedID id = new EncrustedID(Encrusted.MODID, encrustedMaterial, slot);
 
-        String baseName;
-        if ("gold".equals(encrustedMaterial.getBaseMaterial().getName())) {
-            baseName = "golden";
-        } else {
-            baseName = encrustedMaterial.getBaseMaterial().getName();
-        }
-
-        String basePiece = baseName + "_" + slotName;
-        Identifier id = new Identifier(Encrusted.MODID, encrustedMaterial.getEncrustor().getName() + "_encrusted_" + basePiece);
-
-        smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", basePiece), new Identifier(Encrusted.MODID, encrustedMaterial.getEncrustor().getName()), id));
+        smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getFullItemName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
 
         Registry.register(
                 Registry.ITEM,
                 id,
                 new ArmorItem(encrustedMaterial, slot, new Item.Settings().group(ENCRUSTED_GROUP))
         );
+
+        langEnUs.item(id, Translation.ENUS.translate(id.getEncrustorName(), id.getFullItemName()));
     }
 
     /**
