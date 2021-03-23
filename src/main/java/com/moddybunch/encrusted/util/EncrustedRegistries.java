@@ -36,6 +36,9 @@ public class EncrustedRegistries {
     public static final Identifier RUBY_ID = new Identifier(Encrusted.MODID, "ruby");
     public static final Identifier DEV_GEM_ID = new Identifier(Encrusted.MODID, "dev_gem");
 
+    //Dyeable Encrusted Armors
+    public static ArrayList<DyeableArmorItem> dyeableArmors = new ArrayList<>();
+
     //Build Item Groups
     public static final ItemGroup ENCRUSTED_GROUP = FabricItemGroupBuilder.build(
             ENCRUSTED_GROUP_ID,
@@ -50,7 +53,6 @@ public class EncrustedRegistries {
     //For us to use to test things
     public static final Item DEV_GEM = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
 
-
     //Encrustors
     public static final ArmorEncrustor RUBY_ARMOR_ENCRUSTOR = new ArmorEncrustor(RUBY, "ruby", 0, 1, 0, 0.5f,0);
     public static final ArmorEncrustor DEV_ARMOR_ENCRUSTOR = new ArmorEncrustor(DEV_GEM, "dev_gem", 0, 0, 0, 0f,0.1f);
@@ -61,6 +63,13 @@ public class EncrustedRegistries {
     // Lang
     public static JLang langEnUs = JLang.lang();
 
+    //Loot Table IDs
+    private static final Identifier ABANDONED_MINESHAFT_ID = new Identifier("minecraft", "chests/abandoned_mineshaft");
+    private static final Identifier STRONGHOLD_CORRIDOR_ID = new Identifier("minecraft", "chests/stronghold_corridor");
+    private static final Identifier STRONGHOLD_CROSSING_ID = new Identifier("minecraft", "chests/stronghold_crossing");
+    private static final Identifier STRONGHOLD_LIBRARY_ID = new Identifier("minecraft", "chests/stronghold_library");
+    private static final Identifier END_CITY_TREASURE_ID = new Identifier("minecraft", "chests/end_city_treasure");
+
     /**
      * Runs in onInitialize, registers the objects in this class
      */
@@ -69,14 +78,14 @@ public class EncrustedRegistries {
         Registry.register(Registry.ITEM, RUBY_ID, RUBY);
         Registry.register(Registry.ITEM, DEV_GEM_ID, DEV_GEM);
 
-       //Encrusted Armors
-       registerAllVanillaArmors(RUBY_ARMOR_ENCRUSTOR);
-       registerAllVanillaArmors(DEV_ARMOR_ENCRUSTOR);
-
+        //Encrusted Armors
+        registerAllVanillaArmors(RUBY_ARMOR_ENCRUSTOR);
+        registerAllVanillaArmors(DEV_ARMOR_ENCRUSTOR);
 
         // Functions
         modifyLootTables();
-
+       
+      // Lang
        RuntimeResourcePack rrpEnUs = RuntimeResourcePack.create(Encrusted.MODID + ":en_us");
        rrpEnUs.addLang(RuntimeResourcePack.id("en_us"), langEnUs);
        RRPCallback.EVENT.register(a -> a.add(rrpEnUs));
@@ -96,11 +105,21 @@ public class EncrustedRegistries {
 
         smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getFullItemName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
 
-        Registry.register(
-                Registry.ITEM,
-                id,
-                new ArmorItem(encrustedMaterial, slot, new Item.Settings().group(ENCRUSTED_GROUP))
-        );
+        if(id.getBaseMaterialLongName().equals("leather")) {
+            DyeableArmorItem dyeableArmorItem = new DyeableArmorItem(encrustedMaterial, slot, new Item.Settings().group(ENCRUSTED_GROUP));
+            dyeableArmors.add(dyeableArmorItem);
+            Registry.register(
+                    Registry.ITEM,
+                    id,
+                    dyeableArmorItem
+            );
+        } else {
+            Registry.register(
+                    Registry.ITEM,
+                    id,
+                    new ArmorItem(encrustedMaterial, slot, new Item.Settings().group(ENCRUSTED_GROUP))
+            );
+        }
 
         langEnUs.item(id, Translation.ENUS.translate(id.getEncrustorName(), id.getFullItemName()));
     }

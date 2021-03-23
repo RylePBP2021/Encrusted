@@ -16,6 +16,9 @@
   "entrypoints": {
     "main": [
       "com.moddybunch.encrusted.Encrusted"
+    ],
+    "client": [
+      "com.moddybunch.encrusted.client.EncrustedClient"
     ]
   },
   "mixins": [
