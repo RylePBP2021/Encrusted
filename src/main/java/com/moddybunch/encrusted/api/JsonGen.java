@@ -58,13 +58,26 @@ public class JsonGen {
     public static String createItemModelJson(String baseId, String encrustorId, String type) {
         if ("generated".equals(type) || "handheld".equals(type)) {
             //The two types of items. "handheld" is used mostly for tools and the like, while "generated" is used for everything else.
-            return "{\n" +
-                    "  \"parent\": \"item/" + type + "\",\n" +
-                    "  \"textures\": {\n" +
-                    "    \"layer0\": \"minecraft:item/" + baseId + "\",\n" +
-                    "    \"layer1\": \"" + Encrusted.MODID + ":item/" + encrustorId + "\"\n" +
-                    "  }\n" +
-                    "}";
+
+            // Leather is kinda wonky, so we need to make a special case here
+            if(baseId.contains("leather")) {
+                return "{\n" +
+                        "  \"parent\": \"item/" + type + "\",\n" +
+                        "  \"textures\": {\n" +
+                        "    \"layer0\": \"minecraft:item/" + baseId + "\",\n" +
+                        "    \"layer1\": \"minecraft:item/" + baseId + "_overlay\",\n" +
+                        "    \"layer2\": \"" + Encrusted.MODID + ":item/" + encrustorId + "\"\n" +
+                        "  }\n" +
+                        "}";
+            } else {
+                return "{\n" +
+                        "  \"parent\": \"item/" + type + "\",\n" +
+                        "  \"textures\": {\n" +
+                        "    \"layer0\": \"minecraft:item/" + baseId + "\",\n" +
+                        "    \"layer1\": \"" + Encrusted.MODID + ":item/" + encrustorId + "\"\n" +
+                        "  }\n" +
+                        "}";
+            }
         }
         else {
             //If the type is invalid, return an empty json string.
