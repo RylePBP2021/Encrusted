@@ -1,9 +1,15 @@
 package com.moddybunch.encrusted.api;
 
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
+import net.minecraft.world.World;
 
 /**
  * Encrusted Armors
@@ -161,5 +167,16 @@ public class EncrustedArmor implements ArmorMaterial {
      */
     public ArmorMaterial getBaseMaterial() {
         return baseMaterial;
+    }
+
+    /**
+     * Get the item settings for the armor
+     */
+    public FabricItemSettings getSettings() {
+        if(encrustor.getSettings() == null) {
+            return new FabricItemSettings();
+        } else {
+            return encrustor.getSettings();
+        }
     }
 }
