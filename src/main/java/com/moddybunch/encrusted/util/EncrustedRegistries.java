@@ -2,10 +2,9 @@ package com.moddybunch.encrusted.util;
 
 import com.google.gson.JsonObject;
 import com.moddybunch.encrusted.Encrusted;
-import com.moddybunch.encrusted.api.ArmorEncrustor;
-import com.moddybunch.encrusted.api.EncrustedArmor;
-import com.moddybunch.encrusted.api.EncrustedID;
-import com.moddybunch.encrusted.api.JsonGen;
+import com.moddybunch.encrusted.api.*;
+import com.moddybunch.encrusted.api.armor.EncrustedArmorItem;
+import com.moddybunch.encrusted.api.armor.EncrustedDyeableArmorItem;
 import com.moddybunch.encrusted.api.translation.Translation;
 import net.devtech.arrp.api.RRPCallback;
 import net.devtech.arrp.api.RuntimeResourcePack;
@@ -34,6 +33,7 @@ public class EncrustedRegistries {
 
     //Items
     public static final Identifier RUBY_ID = new Identifier(Encrusted.MODID, "ruby");
+    public static final Identifier BANANA_ID = new Identifier(Encrusted.MODID, "banana");
     public static final Identifier DEV_GEM_ID = new Identifier(Encrusted.MODID, "dev_gem");
 
     //Dyeable Encrusted Armors
@@ -49,12 +49,17 @@ public class EncrustedRegistries {
     //Objects to be registered
     //Items
     public static final Item RUBY = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
+    public static final Item BANANA = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64).food(new FoodComponent.Builder().hunger(4).snack().saturationModifier(0.6f).build()));
 
     //For us to use to test things
     public static final Item DEV_GEM = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
 
+    //Banana encrusted items food values
+    public static final FoodComponent BANANA_ENCRUSTOR_FOOD_COMPONENT = new FoodComponent.Builder().hunger(6).saturationModifier(1.6f).build();
+
     //Encrustors
     public static final ArmorEncrustor RUBY_ARMOR_ENCRUSTOR = new ArmorEncrustor(RUBY, "ruby", 0, 1, 0, 0.5f,0);
+    public static final ArmorEncrustor BANANA_ARMOR_ENCRUSTOR = new ArmorEncrustor.Builder().baseItem(BANANA).registerName("banana").settings(new FabricItemSettings().food(BANANA_ENCRUSTOR_FOOD_COMPONENT)).build();
     public static final ArmorEncrustor DEV_ARMOR_ENCRUSTOR = new ArmorEncrustor(DEV_GEM, "dev_gem", 0, 0, 0, 0f,0.1f);
 
     //Smithing recipes
@@ -76,11 +81,13 @@ public class EncrustedRegistries {
     public static void init() {
         //Items
         Registry.register(Registry.ITEM, RUBY_ID, RUBY);
+        Registry.register(Registry.ITEM, BANANA_ID, BANANA);
         Registry.register(Registry.ITEM, DEV_GEM_ID, DEV_GEM);
 
         //Encrusted Armors
         registerAllVanillaArmors(RUBY_ARMOR_ENCRUSTOR);
         registerAllVanillaArmors(DEV_ARMOR_ENCRUSTOR);
+        registerAllVanillaArmors(BANANA_ARMOR_ENCRUSTOR);
 
         // Functions
         modifyLootTables();
@@ -97,16 +104,14 @@ public class EncrustedRegistries {
      *
      * @param encrustedMaterial The EncrustedArmor to make a piece with
      * @param slot The EquipmentSlot of the armor
-     * @author MitchP404
      */
     public static void registerEnctrustedArmor(EncrustedArmor encrustedMaterial, EquipmentSlot slot) {
-
         EncrustedID id = new EncrustedID(Encrusted.MODID, encrustedMaterial, slot);
 
         smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getFullItemName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
 
         if(id.getBaseMaterialLongName().equals("leather")) {
-            DyeableArmorItem dyeableArmorItem = new DyeableArmorItem(encrustedMaterial, slot, new Item.Settings().group(ENCRUSTED_GROUP));
+            EncrustedDyeableArmorItem dyeableArmorItem = new EncrustedDyeableArmorItem(encrustedMaterial, slot, encrustedMaterial.getSettings().group(ENCRUSTED_GROUP));
             dyeableArmors.add(dyeableArmorItem);
             Registry.register(
                     Registry.ITEM,
@@ -117,7 +122,7 @@ public class EncrustedRegistries {
             Registry.register(
                     Registry.ITEM,
                     id,
-                    new ArmorItem(encrustedMaterial, slot, new Item.Settings().group(ENCRUSTED_GROUP))
+                    new EncrustedArmorItem(encrustedMaterial, slot, encrustedMaterial.getSettings().group(ENCRUSTED_GROUP))
             );
         }
 
