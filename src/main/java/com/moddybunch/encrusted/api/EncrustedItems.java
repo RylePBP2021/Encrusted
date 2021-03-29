@@ -16,6 +16,7 @@ public class EncrustedItems implements ToolMaterial {
     private Ingredient repairIngredientSupplier;
     private float sharpness;
     private float hasteBonus;
+    private int miningLevel;
 
     //The base material for the encrusted item
     private ToolMaterial baseMaterial;
@@ -37,6 +38,7 @@ public class EncrustedItems implements ToolMaterial {
         this.hasteBonus = baseMaterial.getMiningSpeedMultiplier() + encrustor.getHasteBonus();
         this.baseMaterial = baseMaterial;
         this.encrustor = encrustor;
+        this.miningLevel = baseMaterial.getMiningLevel();
 
     }
 
@@ -54,14 +56,18 @@ public class EncrustedItems implements ToolMaterial {
         return 0;
     }
 
+    public float getHasteBonus() {
+        return hasteBonus;
+    }
+
     @Override
     public float getAttackDamage() {
-        return 0;
+        return sharpness;
     }
 
     @Override
     public int getMiningLevel() {
-        return 0;
+        return miningLevel;
     }
 
     /**

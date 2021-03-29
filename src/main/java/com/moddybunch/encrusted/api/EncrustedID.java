@@ -111,6 +111,18 @@ public class EncrustedID extends Identifier {
     }
 
     /**
+     * Creates an EncrustedID using an EncrustedArmor, a namespace, and an EquipmentSlot
+     * @param namespace The namespace of the ID
+     * @param item The item to make an ID with
+     * @param MaterialName name of material
+     * @param tool The type of tool
+     * @author MitchP404
+     */
+    public EncrustedID(String namespace, EncrustedItems item, String MaterialName, String tool) {
+        this(namespace, item.getEncrustor().getName(), MaterialName, tool, true);
+    }
+
+    /**
      * Takes the item name and returns the alternate item name. Does not set altItemName
      * @param oldName The item name
      * @return The alternate name

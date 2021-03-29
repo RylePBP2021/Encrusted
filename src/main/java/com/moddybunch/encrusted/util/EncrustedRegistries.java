@@ -10,6 +10,7 @@ import net.minecraft.item.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import javax.tools.Tool;
 import java.util.ArrayList;
 
 /**
@@ -42,6 +43,7 @@ public class EncrustedRegistries {
     //Encrustors
     public static final ArmorEncrustor RUBY_ARMOR_ENCRUSTOR = new ArmorEncrustor(RUBY, "ruby", 0, 1, 0, 0.5f,0);
     public static final ArmorEncrustor DEV_ARMOR_ENCRUSTOR = new ArmorEncrustor(DEV_GEM, "dev_gem", 0, 0, 0, 0f,0.1f);
+    public static final ItemsEncrustor RUBY_ITEM_ENCRUSTOR = new ItemsEncrustor(RUBY, "ruby", 0, 0, 1, 0f);
 
     //Smithing recipes
     public static ArrayList<JsonObject> smithingRecipes = new ArrayList<>();
@@ -57,26 +59,9 @@ public class EncrustedRegistries {
        //Encrusted Armors
        registerAllVanillaArmors(RUBY_ARMOR_ENCRUSTOR);
        registerAllVanillaArmors(DEV_ARMOR_ENCRUSTOR);
-    }
 
-    /**
-     * Register a piece of encrusted armor using the EncrustedArmor and the desired slot
-     *
-     * @param encrustedMaterial The EncrustedArmor to make a piece with
-     * @param slot The EquipmentSlot of the armor
-     * @author MitchP404
-     */
-    public static void registerEnctrustedArmor(EncrustedArmor encrustedMaterial, EquipmentSlot slot) {
-
-        EncrustedID id = new EncrustedID(Encrusted.MODID, encrustedMaterial, slot);
-
-        smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getBaseMaterialLongName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
-
-        Registry.register(
-                Registry.ITEM,
-                id,
-                new ArmorItem(encrustedMaterial, slot, new Item.Settings().group(ENCRUSTED_GROUP))
-        );
+       //Encrusted Items
+        registerAllVanillaItems(RUBY_ITEM_ENCRUSTOR);
     }
 
     /**
@@ -134,6 +119,84 @@ public class EncrustedRegistries {
     }
 
     /**
+     * Register a encrusted tool using the EncrustedItem and the desired tool
+     *
+     * @param encrustedMaterial The EncrustedItems to make a piece with
+     * @param tool The type of tool you are making
+     * @param MaterialName name of material
+     * @author grover666
+     */
+    public static void registerEnctrustedItem(ToolMaterials material, EncrustedItems encrustedMaterial, String tool, String MaterialName) {
+
+        if (tool.equals("sword")){
+            EncrustedID id = new EncrustedID(Encrusted.MODID, encrustedMaterial, MaterialName, tool);
+
+            smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getBaseMaterialLongName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
+
+            Registry.register(
+                    Registry.ITEM,
+                    id,
+                    new SwordItem(material, (int)(encrustedMaterial.getAttackDamage()), encrustedMaterial.getHasteBonus(), new Item.Settings().group(ENCRUSTED_GROUP))
+            );
+       }/*else if (tool.equals("hoe")){
+            EncrustedID id = new EncrustedID(Encrusted.MODID, encrustedMaterial, MaterialName, tool);
+
+            smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getBaseMaterialLongName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
+
+            Registry.register(
+                    Registry.ITEM,
+                    id,
+                    new HoeItem(material, (int)(encrustedMaterial.getAttackDamage()), encrustedMaterial.getHasteBonus(), new Item.Settings().group(ENCRUSTED_GROUP))
+            );
+        }else if(tool.equals("pickaxe")){
+            EncrustedID id = new EncrustedID(Encrusted.MODID, encrustedMaterial, MaterialName, tool);
+
+            smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getBaseMaterialLongName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
+
+            Registry.register(
+                    Registry.ITEM,
+                    id,
+                    new PickaxeItem(material, (int)(encrustedMaterial.getAttackDamage()), encrustedMaterial.getHasteBonus(), new Item.Settings().group(ENCRUSTED_GROUP))
+            );
+        }else if(tool.equals("axe")){
+            EncrustedID id = new EncrustedID(Encrusted.MODID, encrustedMaterial, MaterialName, tool);
+
+            smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getBaseMaterialLongName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
+
+            Registry.register(
+                    Registry.ITEM,
+                    id,
+                    new AxeItem(material, (int)(encrustedMaterial.getAttackDamage()), encrustedMaterial.getHasteBonus(), new Item.Settings().group(ENCRUSTED_GROUP))
+            );
+        }else if(tool.equals("shovel")){
+            EncrustedID id = new EncrustedID(Encrusted.MODID, encrustedMaterial, MaterialName, tool);
+
+            smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getBaseMaterialLongName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
+
+            Registry.register(
+                    Registry.ITEM,
+                    id,
+                    new ShovelItem(material, (int)(encrustedMaterial.getAttackDamage()), encrustedMaterial.getHasteBonus(), new Item.Settings().group(ENCRUSTED_GROUP))
+            );
+        }*/
+    }
+
+    /**
+     * Quickly registers an entire set of encrusted tools
+     *
+     * @param encrustedMaterial The EncrustedItems to make a tool set with
+     * @param MaterialName name of material
+     * @author grover666
+     */
+    public static void registerEnctrustedItemSet(EncrustedItems encrustedMaterial, String MaterialName, ToolMaterials material) {
+        registerEnctrustedItem(material, encrustedMaterial, "sword", MaterialName);
+       /* registerEnctrustedItem(material, encrustedMaterial, "hoe", MaterialName);
+        registerEnctrustedItem(material, encrustedMaterial, "pickaxe", MaterialName);
+        registerEnctrustedItem(material, encrustedMaterial, "axe", MaterialName);
+        registerEnctrustedItem(material, encrustedMaterial, "shovel", MaterialName);*/
+    }
+
+    /**
      * Quickly registers every single vanilla item using an encrustor
      *
      * @param encrustor The encrustor to use
@@ -141,16 +204,34 @@ public class EncrustedRegistries {
      */
     public static void registerAllVanillaItems(ItemsEncrustor encrustor) {
         //Wood
-        registerEnctrustedItem(new EncrustedArmor(ToolMaterials.WOOD, encrustor));
+        registerEnctrustedItemSet(new EncrustedItems(StringToToolMaterial("wood"), encrustor), "wood", ToolMaterials.WOOD);
         //Stone
-        registerEnctrustedItem(new EncrustedArmor(ToolMaterials.STONE, encrustor));
+        registerEnctrustedItemSet(new EncrustedItems(StringToToolMaterial("stone"), encrustor), "stone", ToolMaterials.STONE);
         //Iron
-        registerEnctrustedItem(new EncrustedArmor(ToolMaterials.IRON, encrustor));
+        registerEnctrustedItemSet(new EncrustedItems(StringToToolMaterial("iron"), encrustor), "iron", ToolMaterials.IRON);
         //Gold
-        registerEnctrustedItem(new EncrustedArmor(ToolMaterials.GOLD, encrustor));
+        registerEnctrustedItemSet(new EncrustedItems(StringToToolMaterial("gold"), encrustor), "gold", ToolMaterials.GOLD);
         //Diamond
-        registerEnctrustedItem(new EncrustedArmor(ToolMaterials.DIAMOND, encrustor));
-        //Netherite
-        registerEnctrustedItem(new EncrustedArmor(ToolMaterials.NETHERITE, encrustor));
+        registerEnctrustedItemSet(new EncrustedItems(StringToToolMaterial("diamond"), encrustor), "diamond", ToolMaterials.DIAMOND);
+        //netherite
+        registerEnctrustedItemSet(new EncrustedItems(StringToToolMaterial("netherite"), encrustor), "netherite", ToolMaterials.NETHERITE);
+        }
+
+    public static ToolMaterials StringToToolMaterial(String material){
+        if(material.equals("wood")){
+            return ToolMaterials.WOOD;
+        }else if(material.equals("stone")){
+            return ToolMaterials.STONE;
+        }else if(material.equals("iron")){
+            return ToolMaterials.IRON;
+        }else if(material.equals("gold")){
+            return ToolMaterials.GOLD;
+        }else if(material.equals("diamond")){
+            return ToolMaterials.DIAMOND;
+        }else if(material.equals("netherite")) {
+            return ToolMaterials.NETHERITE;
+        }else{
+            return null;
+        }
     }
 }
