@@ -1,8 +1,11 @@
 package com.moddybunch.encrusted.api;
 
 import com.moddybunch.encrusted.Encrusted;
+import com.moddybunch.encrusted.api.armor.DamagedData;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.item.Item;
+
+import java.util.function.Consumer;
 
 /**
  * The class for armor encrustors. Created using an Item and used to create an EncrustedArmor
@@ -27,6 +30,41 @@ public class ArmorEncrustor {
     //Any ItemSettings that should be applied to the armor
     private FabricItemSettings settings;
 
+    //Consumer ran when the entity wearing the armor takes damage
+    private Consumer<DamagedData> onDamaged;
+
+    /**
+     * Create a new Encrustor for an Item
+     *
+     * @param baseItem The item that you are creating an Encrustor for
+     * @param name The name of the item, in all lowercase. Important for registering armor
+     * @param durabilityBonus The increase to durability of the Encrustor
+     * @param protectionBonus The increase to protection of the Encrustor
+     * @param enchantabilityBonus The increase to enchantability of the Encrustor
+     * @param toughnessBonus The increase to toughness of the Encrustor
+     * @param knockbackResistanceBonus The increase to knockback resistance of the Encrustor
+     * @param settings The FabricItemSettings applied
+     * @param onDamaged Consumer ran when the entity wearing the armor takes damaged, eats a DamagedData parameter
+     *
+     * @author MitchP404
+     */
+    public ArmorEncrustor(Item baseItem, String name, int durabilityBonus, int protectionBonus, int enchantabilityBonus, float toughnessBonus, float knockbackResistanceBonus, FabricItemSettings settings, Consumer<DamagedData> onDamaged) {
+        this.baseItem = baseItem;
+        this.registerName = name;
+        this.durabilityBonus = durabilityBonus;
+        this.protectionBonus = protectionBonus;
+        this.enchantabilityBonus = enchantabilityBonus;
+        this.toughnessBonus = toughnessBonus;
+        this.knockbackResistanceBonus = knockbackResistanceBonus;
+        this.settings = settings;
+
+        if(onDamaged == null) {
+            onDamaged = (DamagedData data) -> {};
+        } else {
+            this.onDamaged = onDamaged;
+        }
+    }
+
     /**
      * Create a new Encrustor for an Item
      *
@@ -42,14 +80,7 @@ public class ArmorEncrustor {
      * @author MitchP404
      */
     public ArmorEncrustor(Item baseItem, String name, int durabilityBonus, int protectionBonus, int enchantabilityBonus, float toughnessBonus, float knockbackResistanceBonus, FabricItemSettings settings) {
-        this.baseItem = baseItem;
-        this.registerName = name;
-        this.durabilityBonus = durabilityBonus;
-        this.protectionBonus = protectionBonus;
-        this.enchantabilityBonus = enchantabilityBonus;
-        this.toughnessBonus = toughnessBonus;
-        this.knockbackResistanceBonus = knockbackResistanceBonus;
-        this.settings = settings;
+        this(baseItem, name, durabilityBonus, protectionBonus, enchantabilityBonus, toughnessBonus, knockbackResistanceBonus, settings, null);
     }
 
     /**
@@ -158,6 +189,14 @@ public class ArmorEncrustor {
         return this.settings;
     }
 
+    //Effects
+
+    public void onDamaged(DamagedData data) {
+        Encrusted.EncrustedLog.info("Made it to the armor encrustor! Accepting the data and running the function.");
+        this.onDamaged.accept(data);
+    }
+
+
     /**
      * Allows you to create an armor encrustor, without using a gigantic constructor.
      * Just call each function in a chain, for example, do: <br><br>
@@ -184,6 +223,9 @@ public class ArmorEncrustor {
 
         //Any ItemSettings that should be applied to the armor
         private FabricItemSettings settings;
+
+        //Consumer ran when the entity wearing the armor takes damage
+        private Consumer<DamagedData> onDamaged;
 
         /**
          * <strong>REQUIRED</strong><br>
@@ -267,6 +309,12 @@ public class ArmorEncrustor {
             return this;
         }
 
+        public ArmorEncrustor.Builder onDamaged(Consumer<DamagedData> onDamaged) {
+            Encrusted.EncrustedLog.info("Adding onDamaged function to encrustor \"" + this.registerName + "\".");
+            this.onDamaged = onDamaged;
+            return this;
+        }
+
         /**
          * Converts the builder to an ArmorEncrustor
          * @return The encrustor, <strong>if and only if</strong> the builder has both a baseItem and a registerName.
@@ -277,7 +325,7 @@ public class ArmorEncrustor {
                 Encrusted.EncrustedLog.fatal("Cannot convert builder to armor encrustor, needs both a registerName and baseItem");
                 return new ArmorEncrustor();
             } else {
-                return new ArmorEncrustor(this.baseItem, this.registerName, this.durabilityBonus, this.protectionBonus, this.enchantabilityBonus, this.toughnessBonus, this.knockbackResistanceBonus, this.settings);
+                return new ArmorEncrustor(this.baseItem, this.registerName, this.durabilityBonus, this.protectionBonus, this.enchantabilityBonus, this.toughnessBonus, this.knockbackResistanceBonus, this.settings, this.onDamaged);
             }
         }
     }
