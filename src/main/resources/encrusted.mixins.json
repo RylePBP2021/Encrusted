@@ -5,7 +5,8 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "KnockbackResMixin",
-    "SmithingRecipeMixin"
+    "SmithingRecipeMixin",
+    "LivingEntityEffects"
   ],
   "client": [
     "ModelLoaderMixin"

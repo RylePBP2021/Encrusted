@@ -3,6 +3,7 @@ package com.moddybunch.encrusted.util;
 import com.google.gson.JsonObject;
 import com.moddybunch.encrusted.Encrusted;
 import com.moddybunch.encrusted.api.*;
+import com.moddybunch.encrusted.api.armor.DamagedData;
 import com.moddybunch.encrusted.api.armor.EncrustedArmorItem;
 import com.moddybunch.encrusted.api.armor.EncrustedDyeableArmorItem;
 import com.moddybunch.encrusted.api.translation.Translation;
@@ -14,11 +15,15 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.*;
 import net.minecraft.loot.ConstantLootTableRange;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
 
@@ -49,7 +54,7 @@ public class EncrustedRegistries {
     //Objects to be registered
     //Items
     public static final Item RUBY = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
-    public static final Item BANANA = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64).food(new FoodComponent.Builder().hunger(4).snack().saturationModifier(0.6f).build()));
+    public static final Item BANANA = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64).food(new FoodComponent.Builder().hunger(4).snack().saturationModifier(0.6f).meat().build()));
 
     //For us to use to test things
     public static final Item DEV_GEM = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
@@ -60,7 +65,10 @@ public class EncrustedRegistries {
     //Encrustors
     public static final ArmorEncrustor RUBY_ARMOR_ENCRUSTOR = new ArmorEncrustor(RUBY, "ruby", 0, 1, 0, 0.5f,0);
     public static final ArmorEncrustor BANANA_ARMOR_ENCRUSTOR = new ArmorEncrustor.Builder().baseItem(BANANA).registerName("banana").settings(new FabricItemSettings().food(BANANA_ENCRUSTOR_FOOD_COMPONENT)).build();
-    public static final ArmorEncrustor DEV_ARMOR_ENCRUSTOR = new ArmorEncrustor(DEV_GEM, "dev_gem", 0, 0, 0, 0f,0.1f);
+    public static final ArmorEncrustor DEV_ARMOR_ENCRUSTOR = new ArmorEncrustor.Builder().baseItem(DEV_GEM).registerName("dev_gem").onDamaged((DamagedData data) -> {
+        data.getSauce().getAttacker().kill();
+        data.applyStatus(new StatusEffectInstance(StatusEffects.JUMP_BOOST));
+    }).build();
 
     //Smithing recipes
     public static ArrayList<JsonObject> smithingRecipes = new ArrayList<>();

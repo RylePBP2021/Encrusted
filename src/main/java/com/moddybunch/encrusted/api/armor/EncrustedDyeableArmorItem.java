@@ -1,6 +1,9 @@
 package com.moddybunch.encrusted.api.armor;
 
+import com.moddybunch.encrusted.api.EncrustedArmor;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.DyeableArmorItem;
@@ -8,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
+
+import java.util.function.Consumer;
 
 public class EncrustedDyeableArmorItem extends DyeableArmorItem {
 
@@ -28,5 +33,9 @@ public class EncrustedDyeableArmorItem extends DyeableArmorItem {
         } else {
             return super.use(world, user, hand);
         }
+    }
+
+    public void onDamaged(DamageSource sauce, float amount, Consumer<StatusEffectInstance> applyStatusEffect) {
+        ((EncrustedArmor) this.getMaterial()).getEncrustor().onDamaged(new DamagedData(sauce, amount, applyStatusEffect));
     }
 }
