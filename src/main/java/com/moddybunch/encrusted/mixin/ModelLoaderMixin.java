@@ -22,11 +22,17 @@ public class ModelLoaderMixin {
         String baseItem = id.getPath();
 
         //Check if the item is an encrusted item (if not then continue)
-        if(!baseItem.contains("encrusted")) return;
+        if(!baseItem.contains("_encrusted_")) return;
 
         //Create Json
         EncrustedID encrustedID = new EncrustedID(id.toString());
-        String modelJson = JsonGen.createItemModelJson(baseItem, encrustedID.getItemName() + "_" + encrustedID.getEncrustorName(),"generated");
+        String modelJson = JsonGen.createItemModelJson(encrustedID.getFullItemName(), encrustedID.getItemName() + "_" + encrustedID.getEncrustorName(),"generated");
+        Encrusted.EncrustedLog.info("Creating model \"" + encrustedID.toString() +
+                                    "\" using base material \"" + encrustedID.getBaseMaterialLongName() +
+                                    "\", encrustor \"" + encrustedID.getEncrustorName() +
+                                    "\", item \"" + encrustedID.getItemName() +
+                                    "\", and type \"generated\""
+        );
 
         if ("".equals(modelJson)) return;
         //We check if the json string we get is valid before continuing.

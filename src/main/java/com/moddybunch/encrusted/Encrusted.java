@@ -5,6 +5,7 @@ import net.fabricmc.api.ModInitializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
 public class Encrusted implements ModInitializer {
 
 	/**
@@ -19,8 +20,11 @@ public class Encrusted implements ModInitializer {
 	public static final Logger EncrustedLog = LogManager.getLogger(MODID);
 
 	// no you
+
 	@Override
 	public void onInitialize() {
 		EncrustedRegistries.init();
 	}
+
+
 }

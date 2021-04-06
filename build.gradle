@@ -21,6 +21,16 @@ dependencies {
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.
+
+	//ARRP
+	modImplementation group: 'net.devtech', name: 'arrp', version: '0.3.7'
+}
+
+repositories {
+	//ARRP
+	maven {
+		url = 'https://raw.githubusercontent.com/Devan-Kerman/Devan-Repo/master/'
+	}
 }
 
 processResources {
