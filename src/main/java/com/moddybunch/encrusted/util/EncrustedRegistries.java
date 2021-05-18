@@ -6,6 +6,7 @@ import com.moddybunch.encrusted.api.*;
 import com.moddybunch.encrusted.api.armor.DamagedData;
 import com.moddybunch.encrusted.api.armor.EncrustedArmorItem;
 import com.moddybunch.encrusted.api.armor.EncrustedDyeableArmorItem;
+import com.moddybunch.encrusted.api.items.EncrustedSwordsItem;
 import com.moddybunch.encrusted.api.translation.Translation;
 import net.devtech.arrp.api.RRPCallback;
 import net.devtech.arrp.api.RuntimeResourcePack;
@@ -14,6 +15,7 @@ import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -66,10 +68,16 @@ public class EncrustedRegistries {
     //Encrustors
     public static final ArmorEncrustor RUBY_ARMOR_ENCRUSTOR = new ArmorEncrustor(RUBY, "ruby", 0, 1, 0, 0.5f,0);
     public static final ItemsEncrustor RUBY_ITEM_ENCRUSTOR = new ItemsEncrustor(RUBY, "ruby", 0, 0, 1, 0f, 0f);
+
     public static final ArmorEncrustor BANANA_ARMOR_ENCRUSTOR = new ArmorEncrustor.Builder().baseItem(BANANA).registerName("banana").settings(new FabricItemSettings().food(BANANA_ENCRUSTOR_FOOD_COMPONENT)).build();
+    public static final ItemsEncrustor BANANA_ITEM_ENCRUSTOR = new ItemsEncrustor.Builder().baseItem(BANANA).registerName("banana").settings(new FabricItemSettings().food(BANANA_ENCRUSTOR_FOOD_COMPONENT)).build();
+
     public static final ArmorEncrustor DEV_ARMOR_ENCRUSTOR = new ArmorEncrustor.Builder().baseItem(DEV_GEM).registerName("dev_gem").onDamaged((DamagedData data) -> {
         data.getSauce().getAttacker().kill();
         data.applyStatus(new StatusEffectInstance(StatusEffects.JUMP_BOOST));
+    }).build();
+    public static final ItemsEncrustor DEV_ITEM_ENCRUSTOR = new ItemsEncrustor.Builder().baseItem(DEV_GEM).registerName("dev_gem").sharpnessBonus(-3).onAttack((Entity target) -> {
+        target.kill();
     }).build();
 
     //Smithing recipes
@@ -96,6 +104,8 @@ public class EncrustedRegistries {
 
        //Encrusted Items
         registerAllVanillaItems(RUBY_ITEM_ENCRUSTOR);
+        registerAllVanillaItems(BANANA_ITEM_ENCRUSTOR);
+        registerAllVanillaItems(DEV_ITEM_ENCRUSTOR);
       
         //Encrusted Armors
         registerAllVanillaArmors(RUBY_ARMOR_ENCRUSTOR);
@@ -196,7 +206,7 @@ public class EncrustedRegistries {
             Registry.register(
                     Registry.ITEM,
                     id,
-                    new SwordItem(encrustedMaterial, 3, -2.4f + encrustedMaterial.getAttackSpeedBonus(), new Item.Settings().group(ENCRUSTED_GROUP))
+                    new EncrustedSwordsItem(encrustedMaterial, 3, -2.4f + encrustedMaterial.getAttackSpeedBonus(), encrustedMaterial.getSettings().group(ENCRUSTED_GROUP))
             );
 
             langEnUs.item(id, Translation.ENUS.translate(id.getEncrustorName(), id.getFullItemName()));

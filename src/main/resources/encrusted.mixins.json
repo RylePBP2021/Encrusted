@@ -6,7 +6,8 @@
   "mixins": [
     "KnockbackResMixin",
     "SmithingRecipeMixin",
-    "LivingEntityEffects"
+    "LivingEntityEffects",
+    "PlayerEntityEffects"
   ],
   "client": [
     "ModelLoaderMixin"

@@ -1,5 +1,6 @@
 package com.moddybunch.encrusted.api;
 
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.recipe.Ingredient;
 
@@ -112,5 +113,16 @@ public class EncrustedItems implements ToolMaterial {
      */
     public ToolMaterial getBaseMaterial() {
         return baseMaterial;
+    }
+
+    /**
+     * Get the item settings for the item
+     */
+    public FabricItemSettings getSettings() {
+        if(encrustor.getSettings() == null) {
+            return new FabricItemSettings();
+        } else {
+            return encrustor.getSettings();
+        }
     }
 }
