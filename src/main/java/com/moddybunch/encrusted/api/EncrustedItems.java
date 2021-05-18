@@ -24,9 +24,9 @@ public class EncrustedItems implements ToolMaterial {
     private ItemsEncrustor encrustor;
 
     /**
-     * Creates a new EncrustedArmor material using an already made ToolMaterial and Encrustor
+     * Creates a new EncrustedItem material using an already made ToolMaterial and Encrustor
      *
-     * @param baseMaterial The item material this armor is based on
+     * @param baseMaterial The item material this item is based on
      * @param encrustor The encrustor used
      * @author grover666
      */
@@ -65,6 +65,10 @@ public class EncrustedItems implements ToolMaterial {
         return sharpness;
     }
 
+    public float getAttackSpeedBonus() {
+        return this.getEncrustor().getAttackSpeedBonus();
+    }
+
     @Override
     public int getMiningLevel() {
         return miningLevel;
@@ -101,9 +105,9 @@ public class EncrustedItems implements ToolMaterial {
     }
 
     /**
-     * Get the base material used to create the Imte material
+     * Get the base material used to create the Item material
      *
-     * @return The base ItmesMaterial for the new material
+     * @return The base ItemsMaterial for the new material
      * @author grover666
      */
     public ToolMaterial getBaseMaterial() {

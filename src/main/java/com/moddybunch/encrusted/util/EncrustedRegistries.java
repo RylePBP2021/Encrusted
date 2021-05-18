@@ -65,7 +65,7 @@ public class EncrustedRegistries {
 
     //Encrustors
     public static final ArmorEncrustor RUBY_ARMOR_ENCRUSTOR = new ArmorEncrustor(RUBY, "ruby", 0, 1, 0, 0.5f,0);
-    public static final ItemsEncrustor RUBY_ITEM_ENCRUSTOR = new ItemsEncrustor(RUBY, "ruby", 0, 0, 1, 0f);
+    public static final ItemsEncrustor RUBY_ITEM_ENCRUSTOR = new ItemsEncrustor(RUBY, "ruby", 0, 0, 1, 0f, 0f);
     public static final ArmorEncrustor BANANA_ARMOR_ENCRUSTOR = new ArmorEncrustor.Builder().baseItem(BANANA).registerName("banana").settings(new FabricItemSettings().food(BANANA_ENCRUSTOR_FOOD_COMPONENT)).build();
     public static final ArmorEncrustor DEV_ARMOR_ENCRUSTOR = new ArmorEncrustor.Builder().baseItem(DEV_GEM).registerName("dev_gem").onDamaged((DamagedData data) -> {
         data.getSauce().getAttacker().kill();
@@ -188,15 +188,19 @@ public class EncrustedRegistries {
     public static void registerEnctrustedItem(ToolMaterials material, EncrustedItems encrustedMaterial, String tool, String MaterialName) {
 
         if (tool.equals("sword")){
+
             EncrustedID id = new EncrustedID(Encrusted.MODID, encrustedMaterial, MaterialName, tool);
 
-            smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getBaseMaterialLongName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
+            smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getFullItemName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
 
             Registry.register(
                     Registry.ITEM,
                     id,
-                    new SwordItem(material, (int)(encrustedMaterial.getAttackDamage()), encrustedMaterial.getHasteBonus(), new Item.Settings().group(ENCRUSTED_GROUP))
+                    new SwordItem(encrustedMaterial, 3, -2.4f + encrustedMaterial.getAttackSpeedBonus(), new Item.Settings().group(ENCRUSTED_GROUP))
             );
+
+            langEnUs.item(id, Translation.ENUS.translate(id.getEncrustorName(), id.getFullItemName()));
+
        }/*else if (tool.equals("hoe")){
             EncrustedID id = new EncrustedID(Encrusted.MODID, encrustedMaterial, MaterialName, tool);
 

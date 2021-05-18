@@ -3,9 +3,9 @@ package com.moddybunch.encrusted.api;
 import net.minecraft.item.Item;
 
 /**
- * The class for armor encrustors. Created using an Item and used to create an EncrustedArmor
+ * The class for item encrustors. Created using an Item and used to create an EncrustedItems
  *
- * @author MitchP404
+ * @author grover666
  */
 public class ItemsEncrustor {
 
@@ -16,6 +16,7 @@ public class ItemsEncrustor {
     private int durabilityBonus;
     private int enchantabilityBonus;
     private int sharpnessBonus;
+    private float attackSpeedBonus;
     private float hasteBonus;
 
     //The name of the item, in all lowercase (used in registering the item)
@@ -25,19 +26,22 @@ public class ItemsEncrustor {
      * Create a new Encrustor for an Item
      *
      * @param baseItem The item that you are creating an Encrustor for
+     * @param name The name of the item, in all lowercase. Used when registering.
      * @param durabilityBonus The increase to durability of the Encrustor
      * @param enchantabilityBonus The increase to enchantability of the Encrustor
-     * @param sharpnessBonus the increase to the attack damage of the Encrustor
-     * @param hasteBonus the increase to the mining speed of the Encrustor
+     * @param sharpnessBonus The increase to the attack damage of the Encrustor
+     * @param attackSpeedBonus The increase to attack speed of the Encrustor
+     * @param hasteBonus The increase to the mining speed of the Encrustor
      *
      * @author groverr666
      */
-    public ItemsEncrustor(Item baseItem, String name, int durabilityBonus, int enchantabilityBonus, int sharpnessBonus, float hasteBonus) {
+    public ItemsEncrustor(Item baseItem, String name, int durabilityBonus, int enchantabilityBonus, int sharpnessBonus, float attackSpeedBonus, float hasteBonus) {
         this.baseItem = baseItem;
         this.registerName = name;
         this.durabilityBonus = durabilityBonus;
         this.enchantabilityBonus = enchantabilityBonus;
         this.sharpnessBonus = sharpnessBonus;
+        this.attackSpeedBonus = 0;
         this.hasteBonus = hasteBonus;
     }
 
@@ -79,6 +83,10 @@ public class ItemsEncrustor {
      */
     public float getSharpnessBonus() {
         return sharpnessBonus;
+    }
+
+    public float getAttackSpeedBonus() {
+        return attackSpeedBonus;
     }
 
     /**

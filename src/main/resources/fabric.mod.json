@@ -1,12 +1,15 @@
 {
   "schemaVersion": 1,
   "id": "encrusted",
-  "version": "${version}",
+  "version": "0.1.0",
 
   "name": "Encrusted",
   "description": "Adds the ability to encrust armor to give it special benefits.",
   "authors": [
-    "Stardok4"
+    "Stardok4",
+    "grover666",
+    "PinkFlamess",
+    "loganwhaley"
   ],
 
   "license": "CC0-1.0",
