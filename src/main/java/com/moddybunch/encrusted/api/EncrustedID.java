@@ -112,7 +112,7 @@ public class EncrustedID extends Identifier {
     }
 
     /**
-     * Creates an EncrustedID using an EncrustedArmor, a namespace, and an EquipmentSlot
+     * Creates an EncrustedID using an EncrustedItems, a namespace, and a tool type
      * @param namespace The namespace of the ID
      * @param item The item to make an ID with
      * @param MaterialName name of material
@@ -175,6 +175,8 @@ public class EncrustedID extends Identifier {
         switch(longName) {
             case "golden":
                 return "gold";
+            case "wooden":
+                return "wood";
             default:
                 return longName;
         }
@@ -190,6 +192,8 @@ public class EncrustedID extends Identifier {
         switch(shortName) {
             case "gold":
                 return "golden";
+            case "wood":
+                return "wooden";
             default:
                 return shortName;
         }

@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * A class meant to store translations of encrusted objects, such as Ruby Encrusted Chestplate.
  * Each translation stores three things.
- * Encrustors is an array of Words in which the key is an String serving as an identifier such as "ruby" and the value is a translated String such as "Ruby"
+ * Encrustors is an array of Word objects in which the key is a String serving as an identifier such as "ruby" and the value is a translated String such as "Ruby"
  * Others is an array of Strings that stores other needed words, such as " encrusted ". SPACES ARE NECESSARY!
  * Positions is an array of ints that stores the locations of what is needed.
  * In this array, "1" is the location of the encrustor, "2" is the location of the encrusted item, and "3" is for other words, in order.
@@ -23,7 +23,9 @@ public enum Translation {
     ENUS(new Word[]{
             new Word("ruby", "Ruby"),
             new Word("dev_gem", "Developmentite"),
-            new Word("banana", "Banana")
+            new Word("banana", "Banana"),
+            new Word("glowgem", "Glowgem"),
+            new Word("amethyst", "Amethyst")
         },
         new String[]{
             " Encrusted "

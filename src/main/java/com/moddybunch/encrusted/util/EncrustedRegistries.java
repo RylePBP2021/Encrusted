@@ -6,6 +6,7 @@ import com.moddybunch.encrusted.api.*;
 import com.moddybunch.encrusted.api.armor.DamagedData;
 import com.moddybunch.encrusted.api.armor.EncrustedArmorItem;
 import com.moddybunch.encrusted.api.armor.EncrustedDyeableArmorItem;
+import com.moddybunch.encrusted.api.items.EncrustedSwordsItem;
 import com.moddybunch.encrusted.api.translation.Translation;
 import net.devtech.arrp.api.RRPCallback;
 import net.devtech.arrp.api.RuntimeResourcePack;
@@ -14,13 +15,19 @@ import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.*;
+import net.minecraft.loot.BinomialLootTableRange;
 import net.minecraft.loot.ConstantLootTableRange;
+import net.minecraft.loot.LootTableRange;
+import net.minecraft.loot.UniformLootTableRange;
 import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.stat.Stat;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.lwjgl.system.CallbackI;
@@ -40,6 +47,8 @@ public class EncrustedRegistries {
     //Items
     public static final Identifier RUBY_ID = new Identifier(Encrusted.MODID, "ruby");
     public static final Identifier BANANA_ID = new Identifier(Encrusted.MODID, "banana");
+    public static final Identifier GLOWGEM_ID = new Identifier(Encrusted.MODID, "glowgem");
+    public static final Identifier AMETHYST_ID = new Identifier(Encrusted.MODID, "amethyst");
     public static final Identifier DEV_GEM_ID = new Identifier(Encrusted.MODID, "dev_gem");
 
     //Dyeable Encrusted Armors
@@ -56,6 +65,8 @@ public class EncrustedRegistries {
     //Items
     public static final Item RUBY = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
     public static final Item BANANA = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64).food(new FoodComponent.Builder().hunger(4).snack().saturationModifier(0.6f).meat().build()));
+    public static final Item GLOWGEM = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
+    public static final Item AMETHYST = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
 
     //For us to use to test things
     public static final Item DEV_GEM = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
@@ -65,12 +76,30 @@ public class EncrustedRegistries {
 
     //Encrustors
     public static final ArmorEncrustor RUBY_ARMOR_ENCRUSTOR = new ArmorEncrustor(RUBY, "ruby", 0, 1, 0, 0.5f,0);
-    public static final ItemsEncrustor RUBY_ITEM_ENCRUSTOR = new ItemsEncrustor(RUBY, "ruby", 0, 0, 1, 0f);
+    public static final ItemsEncrustor RUBY_ITEM_ENCRUSTOR = new ItemsEncrustor(RUBY, "ruby", 0, 0, 1, 0f, 0f);
+
     public static final ArmorEncrustor BANANA_ARMOR_ENCRUSTOR = new ArmorEncrustor.Builder().baseItem(BANANA).registerName("banana").settings(new FabricItemSettings().food(BANANA_ENCRUSTOR_FOOD_COMPONENT)).build();
+    public static final ItemsEncrustor BANANA_ITEM_ENCRUSTOR = new ItemsEncrustor.Builder().baseItem(BANANA).registerName("banana").settings(new FabricItemSettings().food(BANANA_ENCRUSTOR_FOOD_COMPONENT)).build();
+
     public static final ArmorEncrustor DEV_ARMOR_ENCRUSTOR = new ArmorEncrustor.Builder().baseItem(DEV_GEM).registerName("dev_gem").onDamaged((DamagedData data) -> {
         data.getSauce().getAttacker().kill();
-        data.applyStatus(new StatusEffectInstance(StatusEffects.JUMP_BOOST));
+        data.applyStatus(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 200));
     }).build();
+    public static final ItemsEncrustor DEV_ITEM_ENCRUSTOR = new ItemsEncrustor.Builder().baseItem(DEV_GEM).registerName("dev_gem").sharpnessBonus(-3).onAttack((Entity target) -> {
+        target.kill();
+    }).build();
+
+    public static final ArmorEncrustor GG_ARMOR_ENCRUSTOR = new ArmorEncrustor.Builder().baseItem(GLOWGEM).registerName("glowgem").onDamaged((DamagedData data) -> {
+        ((LivingEntity)data.getSauce().getAttacker()).applyStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 600));
+    }).build();
+    public static final ItemsEncrustor GG_ITEM_ENCRUSTOR = new ItemsEncrustor.Builder().baseItem(GLOWGEM).registerName("glowgem").onAttack((Entity target) -> {
+        ((LivingEntity)target).applyStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 600));
+    }).build();
+
+    public static final ArmorEncrustor AMETHYST_ARMOR_ENCRUSTOR = new ArmorEncrustor.Builder().baseItem(AMETHYST).registerName("amethyst").onDamaged((DamagedData data) -> {
+        data.getSauce().getAttacker().setOnFireFor(8);
+    }).build();
+    public static final ItemsEncrustor AMETHYST_ITEM_ENCRUSTOR = new ItemsEncrustor.Builder().baseItem(AMETHYST).registerName("amethyst").attackSpeedBonus(0.4f).build();
 
     //Smithing recipes
     public static ArrayList<JsonObject> smithingRecipes = new ArrayList<>();
@@ -79,11 +108,19 @@ public class EncrustedRegistries {
     public static JLang langEnUs = JLang.lang();
 
     //Loot Table IDs
-    private static final Identifier ABANDONED_MINESHAFT_ID = new Identifier("minecraft", "chests/abandoned_mineshaft");
-    private static final Identifier STRONGHOLD_CORRIDOR_ID = new Identifier("minecraft", "chests/stronghold_corridor");
-    private static final Identifier STRONGHOLD_CROSSING_ID = new Identifier("minecraft", "chests/stronghold_crossing");
-    private static final Identifier STRONGHOLD_LIBRARY_ID = new Identifier("minecraft", "chests/stronghold_library");
-    private static final Identifier END_CITY_TREASURE_ID = new Identifier("minecraft", "chests/end_city_treasure");
+    // Identifiers for the Loot Tables
+    private static final Identifier Abandoned_Mineshaft_Loot_Table_ID = new Identifier ("minecraft", "chests/abandoned_mineshaft");
+    private static final Identifier Bastion_Loot_Table_ID = new Identifier("minecraft", "chests/bastion_treasure");
+    private static final Identifier Buried_Treasure_Loot_Table_ID = new Identifier("minecraft", "chests/buried_treasure");
+    private static final Identifier Desert_Pyramid_Loot_Table_ID = new Identifier("minecraft", "chests/desert_pyramid");
+    private static final Identifier Jungle_Temple_Loot_Table_ID = new Identifier("minecraft", "chests/jungle_temple");
+    private static final Identifier Nether_Fortress_Loot_Table_ID = new Identifier("minecraft", "chests/nether_bridge");
+    private static final Identifier Pillager_Outpost_Loot_Table_ID = new Identifier("minecraft", "chests/pillager_outpost");
+    private static final Identifier Ruined_Portal_Loot_Table_ID = new Identifier("minecraft", "chests/ruined_portal");
+    private static final Identifier Shipwreck_Loot_Table_ID = new Identifier("minecraft", "chests/shipwreck_treasure");
+    private static final Identifier Woodland_Mansion_Loot_Table_ID = new Identifier("minecraft", "chests/woodland_mansion");
+
+    private static final Identifier Jungle_Leaves_Loot_Table_ID = new Identifier("minecraft", "blocks/jungle_leaves");
 
     /**
      * Runs in onInitialize, registers the objects in this class
@@ -92,18 +129,37 @@ public class EncrustedRegistries {
         //Items
         Registry.register(Registry.ITEM, RUBY_ID, RUBY);
         Registry.register(Registry.ITEM, BANANA_ID, BANANA);
+        Registry.register(Registry.ITEM, GLOWGEM_ID, GLOWGEM);
+        Registry.register(Registry.ITEM, AMETHYST_ID, AMETHYST);
         Registry.register(Registry.ITEM, DEV_GEM_ID, DEV_GEM);
 
        //Encrusted Items
         registerAllVanillaItems(RUBY_ITEM_ENCRUSTOR);
+        registerAllVanillaItems(BANANA_ITEM_ENCRUSTOR);
+        registerAllVanillaItems(GG_ITEM_ENCRUSTOR);
+        registerAllVanillaItems(AMETHYST_ITEM_ENCRUSTOR);
+        registerAllVanillaItems(DEV_ITEM_ENCRUSTOR);
       
         //Encrusted Armors
         registerAllVanillaArmors(RUBY_ARMOR_ENCRUSTOR);
-        registerAllVanillaArmors(DEV_ARMOR_ENCRUSTOR);
         registerAllVanillaArmors(BANANA_ARMOR_ENCRUSTOR);
+        registerAllVanillaArmors(GG_ARMOR_ENCRUSTOR);
+        registerAllVanillaArmors(AMETHYST_ARMOR_ENCRUSTOR);
+        registerAllVanillaArmors(DEV_ARMOR_ENCRUSTOR);
 
         // Functions
-        modifyLootTables();
+        addToLootTables(RUBY, new Identifier[]{Abandoned_Mineshaft_Loot_Table_ID,
+                Bastion_Loot_Table_ID,
+                Buried_Treasure_Loot_Table_ID,
+                Desert_Pyramid_Loot_Table_ID,
+                Jungle_Temple_Loot_Table_ID,
+                Nether_Fortress_Loot_Table_ID,
+                Pillager_Outpost_Loot_Table_ID,
+                Ruined_Portal_Loot_Table_ID,
+                Shipwreck_Loot_Table_ID,
+                Woodland_Mansion_Loot_Table_ID}, UniformLootTableRange.between(0,3));
+        addToLootTables(BANANA, new Identifier[]{Jungle_Leaves_Loot_Table_ID}, BinomialLootTableRange.create(5, 0.01f));
+        addToLootTables(AMETHYST, new Identifier[]{Buried_Treasure_Loot_Table_ID}, ConstantLootTableRange.create(1));
        
       // Lang
        RuntimeResourcePack rrpEnUs = RuntimeResourcePack.create(Encrusted.MODID + ":en_us");
@@ -188,15 +244,19 @@ public class EncrustedRegistries {
     public static void registerEnctrustedItem(ToolMaterials material, EncrustedItems encrustedMaterial, String tool, String MaterialName) {
 
         if (tool.equals("sword")){
+
             EncrustedID id = new EncrustedID(Encrusted.MODID, encrustedMaterial, MaterialName, tool);
 
-            smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getBaseMaterialLongName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
+            smithingRecipes.add(JsonGen.createSmithingRecipeJson(new Identifier("minecraft", id.getFullItemName()), new Identifier(Encrusted.MODID, id.getEncrustorName()), id));
 
             Registry.register(
                     Registry.ITEM,
                     id,
-                    new SwordItem(material, (int)(encrustedMaterial.getAttackDamage()), encrustedMaterial.getHasteBonus(), new Item.Settings().group(ENCRUSTED_GROUP))
+                    new EncrustedSwordsItem(encrustedMaterial, 3, -2.4f + encrustedMaterial.getAttackSpeedBonus(), encrustedMaterial.getSettings().group(ENCRUSTED_GROUP))
             );
+
+            langEnUs.item(id, Translation.ENUS.translate(id.getEncrustorName(), id.getFullItemName()));
+
        }/*else if (tool.equals("hoe")){
             EncrustedID id = new EncrustedID(Encrusted.MODID, encrustedMaterial, MaterialName, tool);
 
@@ -294,51 +354,44 @@ public class EncrustedRegistries {
         }
     }
 
-
-
-
-
     /** Where we update the loot tables of chests so that rubies are inside of them
      *  @author loganwhaley
+     *  @author MitchP404
      */
-
-
-
-
-        // Identifiers for the Loot Tables
-        private static final Identifier Abandoned_Mineshaft_Loot_Table_ID = new Identifier ("minecraft", "chests/abandoned_mineshaft");
-        private static final Identifier Bastion_Loot_Table_ID = new Identifier("minecraft", "chests/bastion_treasure");
-        private static final Identifier Buried_Treasure_Loot_Table_ID = new Identifier("minecraft", "chests/buried_treasure");
-        private static final Identifier Desert_Pyramid_Loot_Table_ID = new Identifier("minecraft", "chests/desert_pyramid");
-        private static final Identifier Jungle_Temple_Loot_Table_ID = new Identifier("minecraft", "chests/jungle_temple");
-        private static final Identifier Nether_Fortress_Loot_Table_ID = new Identifier("minecraft", "chests/nether_bridge");
-        private static final Identifier Pillager_Outpost_Loot_Table_ID = new Identifier("minecraft", "chests/pillager_outpost");
-        private static final Identifier Ruined_Portal_Loot_Table_ID = new Identifier("minecraft", "chests/ruined_portal");
-        private static final Identifier Shipwreck_Loot_Table_ID = new Identifier("minecraft", "chests/shipwreck_treasure");
-        private static final Identifier Woodland_Mansion_Loot_Table_ID = new Identifier("minecraft", "chests/woodland_mansion");
-
-        // Creates the new chest loot tables
-        private static void modifyLootTables() {
-            LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, supplier, setter) -> {
-
-                // Checks for the each loot table as the game is being loaded
-                if (Abandoned_Mineshaft_Loot_Table_ID.equals(id) ||
-                        Bastion_Loot_Table_ID.equals(id) ||
-                        Buried_Treasure_Loot_Table_ID.equals(id) ||
-                        Desert_Pyramid_Loot_Table_ID.equals(id) ||
-                        Jungle_Temple_Loot_Table_ID.equals(id) ||
-                        Nether_Fortress_Loot_Table_ID.equals(id) ||
-                        Pillager_Outpost_Loot_Table_ID.equals(id) ||
-                        Ruined_Portal_Loot_Table_ID.equals(id) ||
-                        Shipwreck_Loot_Table_ID.equals(id) ||
-                        Woodland_Mansion_Loot_Table_ID.equals(id)){
-                    // Adds the ruby(ies) to the loot table
+    private static void addToLootTables(Item item, Identifier[] ids, LootTableRange range) {
+        LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, supplier, setter) -> {
+            // Checks for the each loot table as the game is being loaded
+            for(Identifier testId : ids) {
+                if (id.equals(testId)) {
+                    // Adds the item to the loot table
                     FabricLootPoolBuilder poolBuilder = FabricLootPoolBuilder.builder()
-                            .rolls(ConstantLootTableRange.create(1))
-                            .withEntry(ItemEntry.builder(RUBY).build());
+                            .rolls(range)
+                            .withEntry(ItemEntry.builder(item).build());
                     supplier.withPool(poolBuilder.build());
                 }
-            });
-        }
-
+            }
+        });
     }
+    /*// Creates the new chest loot tables
+    private static void modifyLootTables() {
+        LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, supplier, setter) -> {
+             // Checks for the each loot table as the game is being loaded
+            if (Abandoned_Mineshaft_Loot_Table_ID.equals(id) ||
+                Bastion_Loot_Table_ID.equals(id) ||
+                Buried_Treasure_Loot_Table_ID.equals(id) ||
+                Desert_Pyramid_Loot_Table_ID.equals(id) ||
+                Jungle_Temple_Loot_Table_ID.equals(id) ||
+                Nether_Fortress_Loot_Table_ID.equals(id) ||
+                Pillager_Outpost_Loot_Table_ID.equals(id) ||
+                Ruined_Portal_Loot_Table_ID.equals(id) ||
+                Shipwreck_Loot_Table_ID.equals(id) ||
+                Woodland_Mansion_Loot_Table_ID.equals(id)){
+                // Adds the ruby(ies) to the loot table
+                FabricLootPoolBuilder poolBuilder = FabricLootPoolBuilder.builder()
+                    .rolls(ConstantLootTableRange.create(1))
+                    .withEntry(ItemEntry.builder(RUBY).build());
+                supplier.withPool(poolBuilder.build());
+            }
+        });
+    }*/
+}
