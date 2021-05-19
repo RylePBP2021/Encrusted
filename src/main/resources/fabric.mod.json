@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "id": "encrusted",
-  "version": "0.1.0",
+  "version": "1.0.0",
 
   "name": "Encrusted",
-  "description": "Adds the ability to encrust armor to give it special benefits.",
+  "description": "A mod designed to enhance progression in minecraft by allowing you to 'encrust' tools, weapons, and armor to give them unique properties.",
   "authors": [
     "Stardok4",
     "grover666",
@@ -13,7 +13,7 @@
   ],
 
   "license": "CC0-1.0",
-  "icon": "assets/encrusted/icon.png",
+  "icon": "assets/encrusted/textures/item/ruby.png",
 
   "environment": "*",
   "entrypoints": {
