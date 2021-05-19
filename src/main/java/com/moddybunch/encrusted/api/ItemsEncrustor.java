@@ -84,7 +84,11 @@ public class ItemsEncrustor {
         this.attackSpeedBonus = attackSpeedBonus;
         this.hasteBonus = hasteBonus;
         this.settings = settings;
-        this.onAttack = onAttack;
+        if(onAttack == null) {
+            this.onAttack = (Entity target) -> {};
+        } else {
+            this.onAttack = onAttack;
+        }
     }
 
     /**

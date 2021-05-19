@@ -23,7 +23,9 @@ public enum Translation {
     ENUS(new Word[]{
             new Word("ruby", "Ruby"),
             new Word("dev_gem", "Developmentite"),
-            new Word("banana", "Banana")
+            new Word("banana", "Banana"),
+            new Word("glowgem", "Glowgem"),
+            new Word("amethyst", "Amethyst")
         },
         new String[]{
             " Encrusted "

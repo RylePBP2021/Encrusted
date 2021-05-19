@@ -17,12 +17,14 @@ import net.fabricmc.fabric.api.loot.v1.FabricLootPoolBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.*;
 import net.minecraft.loot.ConstantLootTableRange;
 import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.stat.Stat;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.lwjgl.system.CallbackI;
@@ -42,6 +44,8 @@ public class EncrustedRegistries {
     //Items
     public static final Identifier RUBY_ID = new Identifier(Encrusted.MODID, "ruby");
     public static final Identifier BANANA_ID = new Identifier(Encrusted.MODID, "banana");
+    public static final Identifier GLOWGEM_ID = new Identifier(Encrusted.MODID, "glowgem");
+    public static final Identifier AMETHYST_ID = new Identifier(Encrusted.MODID, "amethyst");
     public static final Identifier DEV_GEM_ID = new Identifier(Encrusted.MODID, "dev_gem");
 
     //Dyeable Encrusted Armors
@@ -58,6 +62,8 @@ public class EncrustedRegistries {
     //Items
     public static final Item RUBY = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
     public static final Item BANANA = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64).food(new FoodComponent.Builder().hunger(4).snack().saturationModifier(0.6f).meat().build()));
+    public static final Item GLOWGEM = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
+    public static final Item AMETHYST = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
 
     //For us to use to test things
     public static final Item DEV_GEM = new Item(new FabricItemSettings().group(ENCRUSTED_GROUP).maxCount(64));
@@ -74,11 +80,23 @@ public class EncrustedRegistries {
 
     public static final ArmorEncrustor DEV_ARMOR_ENCRUSTOR = new ArmorEncrustor.Builder().baseItem(DEV_GEM).registerName("dev_gem").onDamaged((DamagedData data) -> {
         data.getSauce().getAttacker().kill();
-        data.applyStatus(new StatusEffectInstance(StatusEffects.JUMP_BOOST));
+        data.applyStatus(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 200));
     }).build();
     public static final ItemsEncrustor DEV_ITEM_ENCRUSTOR = new ItemsEncrustor.Builder().baseItem(DEV_GEM).registerName("dev_gem").sharpnessBonus(-3).onAttack((Entity target) -> {
         target.kill();
     }).build();
+
+    public static final ArmorEncrustor GG_ARMOR_ENCRUSTOR = new ArmorEncrustor.Builder().baseItem(GLOWGEM).registerName("glowgem").onDamaged((DamagedData data) -> {
+        ((LivingEntity)data.getSauce().getAttacker()).applyStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 600));
+    }).build();
+    public static final ItemsEncrustor GG_ITEM_ENCRUSTOR = new ItemsEncrustor.Builder().baseItem(GLOWGEM).registerName("glowgem").onAttack((Entity target) -> {
+        ((LivingEntity)target).applyStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 600));
+    }).build();
+
+    public static final ArmorEncrustor AMETHYST_ARMOR_ENCRUSTOR = new ArmorEncrustor.Builder().baseItem(AMETHYST).registerName("amethyst").onDamaged((DamagedData data) -> {
+        data.getSauce().getAttacker().setOnFireFor(8);
+    }).build();
+    public static final ItemsEncrustor AMETHYST_ITEM_ENCRUSTOR = new ItemsEncrustor.Builder().baseItem(AMETHYST).registerName("amethyst").attackSpeedBonus(0.4f).build();
 
     //Smithing recipes
     public static ArrayList<JsonObject> smithingRecipes = new ArrayList<>();
@@ -100,17 +118,23 @@ public class EncrustedRegistries {
         //Items
         Registry.register(Registry.ITEM, RUBY_ID, RUBY);
         Registry.register(Registry.ITEM, BANANA_ID, BANANA);
+        Registry.register(Registry.ITEM, GLOWGEM_ID, GLOWGEM);
+        Registry.register(Registry.ITEM, AMETHYST_ID, AMETHYST);
         Registry.register(Registry.ITEM, DEV_GEM_ID, DEV_GEM);
 
        //Encrusted Items
         registerAllVanillaItems(RUBY_ITEM_ENCRUSTOR);
         registerAllVanillaItems(BANANA_ITEM_ENCRUSTOR);
+        registerAllVanillaItems(GG_ITEM_ENCRUSTOR);
+        registerAllVanillaItems(AMETHYST_ITEM_ENCRUSTOR);
         registerAllVanillaItems(DEV_ITEM_ENCRUSTOR);
       
         //Encrusted Armors
         registerAllVanillaArmors(RUBY_ARMOR_ENCRUSTOR);
-        registerAllVanillaArmors(DEV_ARMOR_ENCRUSTOR);
         registerAllVanillaArmors(BANANA_ARMOR_ENCRUSTOR);
+        registerAllVanillaArmors(GG_ARMOR_ENCRUSTOR);
+        registerAllVanillaArmors(AMETHYST_ARMOR_ENCRUSTOR);
+        registerAllVanillaArmors(DEV_ARMOR_ENCRUSTOR);
 
         // Functions
         modifyLootTables();
