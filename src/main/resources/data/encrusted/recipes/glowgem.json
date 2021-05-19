@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "GRG",
+    "GGG"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glowstone"
+    },
+    "R": {
+      "item": "encrusted:ruby"
+    }
+  },
+  "result": {
+    "item": "encrusted:glowgem"
+  }
+}

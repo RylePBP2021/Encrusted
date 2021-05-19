@@ -22,7 +22,10 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.*;
+import net.minecraft.loot.BinomialLootTableRange;
 import net.minecraft.loot.ConstantLootTableRange;
+import net.minecraft.loot.LootTableRange;
+import net.minecraft.loot.UniformLootTableRange;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.stat.Stat;
 import net.minecraft.util.Identifier;
@@ -105,11 +108,19 @@ public class EncrustedRegistries {
     public static JLang langEnUs = JLang.lang();
 
     //Loot Table IDs
-    private static final Identifier ABANDONED_MINESHAFT_ID = new Identifier("minecraft", "chests/abandoned_mineshaft");
-    private static final Identifier STRONGHOLD_CORRIDOR_ID = new Identifier("minecraft", "chests/stronghold_corridor");
-    private static final Identifier STRONGHOLD_CROSSING_ID = new Identifier("minecraft", "chests/stronghold_crossing");
-    private static final Identifier STRONGHOLD_LIBRARY_ID = new Identifier("minecraft", "chests/stronghold_library");
-    private static final Identifier END_CITY_TREASURE_ID = new Identifier("minecraft", "chests/end_city_treasure");
+    // Identifiers for the Loot Tables
+    private static final Identifier Abandoned_Mineshaft_Loot_Table_ID = new Identifier ("minecraft", "chests/abandoned_mineshaft");
+    private static final Identifier Bastion_Loot_Table_ID = new Identifier("minecraft", "chests/bastion_treasure");
+    private static final Identifier Buried_Treasure_Loot_Table_ID = new Identifier("minecraft", "chests/buried_treasure");
+    private static final Identifier Desert_Pyramid_Loot_Table_ID = new Identifier("minecraft", "chests/desert_pyramid");
+    private static final Identifier Jungle_Temple_Loot_Table_ID = new Identifier("minecraft", "chests/jungle_temple");
+    private static final Identifier Nether_Fortress_Loot_Table_ID = new Identifier("minecraft", "chests/nether_bridge");
+    private static final Identifier Pillager_Outpost_Loot_Table_ID = new Identifier("minecraft", "chests/pillager_outpost");
+    private static final Identifier Ruined_Portal_Loot_Table_ID = new Identifier("minecraft", "chests/ruined_portal");
+    private static final Identifier Shipwreck_Loot_Table_ID = new Identifier("minecraft", "chests/shipwreck_treasure");
+    private static final Identifier Woodland_Mansion_Loot_Table_ID = new Identifier("minecraft", "chests/woodland_mansion");
+
+    private static final Identifier Jungle_Leaves_Loot_Table_ID = new Identifier("minecraft", "blocks/jungle_leaves");
 
     /**
      * Runs in onInitialize, registers the objects in this class
@@ -137,7 +148,18 @@ public class EncrustedRegistries {
         registerAllVanillaArmors(DEV_ARMOR_ENCRUSTOR);
 
         // Functions
-        modifyLootTables();
+        addToLootTables(RUBY, new Identifier[]{Abandoned_Mineshaft_Loot_Table_ID,
+                Bastion_Loot_Table_ID,
+                Buried_Treasure_Loot_Table_ID,
+                Desert_Pyramid_Loot_Table_ID,
+                Jungle_Temple_Loot_Table_ID,
+                Nether_Fortress_Loot_Table_ID,
+                Pillager_Outpost_Loot_Table_ID,
+                Ruined_Portal_Loot_Table_ID,
+                Shipwreck_Loot_Table_ID,
+                Woodland_Mansion_Loot_Table_ID}, UniformLootTableRange.between(0,3));
+        addToLootTables(BANANA, new Identifier[]{Jungle_Leaves_Loot_Table_ID}, BinomialLootTableRange.create(5, 0.01f));
+        addToLootTables(AMETHYST, new Identifier[]{Buried_Treasure_Loot_Table_ID}, ConstantLootTableRange.create(1));
        
       // Lang
        RuntimeResourcePack rrpEnUs = RuntimeResourcePack.create(Encrusted.MODID + ":en_us");
@@ -332,51 +354,44 @@ public class EncrustedRegistries {
         }
     }
 
-
-
-
-
     /** Where we update the loot tables of chests so that rubies are inside of them
      *  @author loganwhaley
+     *  @author MitchP404
      */
-
-
-
-
-        // Identifiers for the Loot Tables
-        private static final Identifier Abandoned_Mineshaft_Loot_Table_ID = new Identifier ("minecraft", "chests/abandoned_mineshaft");
-        private static final Identifier Bastion_Loot_Table_ID = new Identifier("minecraft", "chests/bastion_treasure");
-        private static final Identifier Buried_Treasure_Loot_Table_ID = new Identifier("minecraft", "chests/buried_treasure");
-        private static final Identifier Desert_Pyramid_Loot_Table_ID = new Identifier("minecraft", "chests/desert_pyramid");
-        private static final Identifier Jungle_Temple_Loot_Table_ID = new Identifier("minecraft", "chests/jungle_temple");
-        private static final Identifier Nether_Fortress_Loot_Table_ID = new Identifier("minecraft", "chests/nether_bridge");
-        private static final Identifier Pillager_Outpost_Loot_Table_ID = new Identifier("minecraft", "chests/pillager_outpost");
-        private static final Identifier Ruined_Portal_Loot_Table_ID = new Identifier("minecraft", "chests/ruined_portal");
-        private static final Identifier Shipwreck_Loot_Table_ID = new Identifier("minecraft", "chests/shipwreck_treasure");
-        private static final Identifier Woodland_Mansion_Loot_Table_ID = new Identifier("minecraft", "chests/woodland_mansion");
-
-        // Creates the new chest loot tables
-        private static void modifyLootTables() {
-            LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, supplier, setter) -> {
-
-                // Checks for the each loot table as the game is being loaded
-                if (Abandoned_Mineshaft_Loot_Table_ID.equals(id) ||
-                        Bastion_Loot_Table_ID.equals(id) ||
-                        Buried_Treasure_Loot_Table_ID.equals(id) ||
-                        Desert_Pyramid_Loot_Table_ID.equals(id) ||
-                        Jungle_Temple_Loot_Table_ID.equals(id) ||
-                        Nether_Fortress_Loot_Table_ID.equals(id) ||
-                        Pillager_Outpost_Loot_Table_ID.equals(id) ||
-                        Ruined_Portal_Loot_Table_ID.equals(id) ||
-                        Shipwreck_Loot_Table_ID.equals(id) ||
-                        Woodland_Mansion_Loot_Table_ID.equals(id)){
-                    // Adds the ruby(ies) to the loot table
+    private static void addToLootTables(Item item, Identifier[] ids, LootTableRange range) {
+        LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, supplier, setter) -> {
+            // Checks for the each loot table as the game is being loaded
+            for(Identifier testId : ids) {
+                if (id.equals(testId)) {
+                    // Adds the item to the loot table
                     FabricLootPoolBuilder poolBuilder = FabricLootPoolBuilder.builder()
-                            .rolls(ConstantLootTableRange.create(1))
-                            .withEntry(ItemEntry.builder(RUBY).build());
+                            .rolls(range)
+                            .withEntry(ItemEntry.builder(item).build());
                     supplier.withPool(poolBuilder.build());
                 }
-            });
-        }
-
+            }
+        });
     }
+    /*// Creates the new chest loot tables
+    private static void modifyLootTables() {
+        LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, supplier, setter) -> {
+             // Checks for the each loot table as the game is being loaded
+            if (Abandoned_Mineshaft_Loot_Table_ID.equals(id) ||
+                Bastion_Loot_Table_ID.equals(id) ||
+                Buried_Treasure_Loot_Table_ID.equals(id) ||
+                Desert_Pyramid_Loot_Table_ID.equals(id) ||
+                Jungle_Temple_Loot_Table_ID.equals(id) ||
+                Nether_Fortress_Loot_Table_ID.equals(id) ||
+                Pillager_Outpost_Loot_Table_ID.equals(id) ||
+                Ruined_Portal_Loot_Table_ID.equals(id) ||
+                Shipwreck_Loot_Table_ID.equals(id) ||
+                Woodland_Mansion_Loot_Table_ID.equals(id)){
+                // Adds the ruby(ies) to the loot table
+                FabricLootPoolBuilder poolBuilder = FabricLootPoolBuilder.builder()
+                    .rolls(ConstantLootTableRange.create(1))
+                    .withEntry(ItemEntry.builder(RUBY).build());
+                supplier.withPool(poolBuilder.build());
+            }
+        });
+    }*/
+}
